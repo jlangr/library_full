@@ -43,7 +43,7 @@ public class Branch {
 
    @Override
    public String toString() {
-      return "[Branch] " + name;
+      return "[Branch] " + name + " " + scanCode;
    }
 
    public static Branch createTest(String name, String scanCode) {
