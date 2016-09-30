@@ -1,11 +1,11 @@
-apply plugin: 'java'
-apply plugin: 'eclipse'
+//apply plugin: 'java'
+//apply plugin: 'eclipse'
+//
+//repositories {
+//    mavenCentral()
+//}
 
-repositories {
-    mavenCentral()
-}
-
-sourceCompatibility = 1.8
+//sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {

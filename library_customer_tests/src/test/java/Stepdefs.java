@@ -1,6 +1,7 @@
 import java.util.*;
 import cucumber.api.DataTable;
 import cucumber.api.java.en.*;
+import domain.core.Branch;
 
 public class Stepdefs {
    private List<Branch> branches = new ArrayList<>();

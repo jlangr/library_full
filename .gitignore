@@ -1,5 +1,5 @@
-/.settings/
-/target/
+.settings/
+target/
 /.gradle/
-/bin/
-/build/
+bin/
+build/
