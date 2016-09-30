@@ -30,5 +30,4 @@ public class BranchService {
       store.save(branch);
       return branch.getScanCode();
    }
-
 }
