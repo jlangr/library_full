@@ -4,7 +4,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import controller.BranchRequest;
+import controller.*;
+import static java.util.Arrays.asList;
 
 public class LibraryClient {
 	private RestTemplate template = new RestTemplate();
@@ -41,6 +42,26 @@ public class LibraryClient {
 
    public List<BranchRequest> retrieveBranches(String user) {
       ResponseEntity<BranchRequest[]> response = template.getForEntity(url("/branches"), BranchRequest[].class);
-      return Arrays.asList(response.getBody());
+      return asList(response.getBody());
+   }
+
+   public String addPatron(String name) {
+      PatronRequest request = new PatronRequest();
+      // careful--something can't handle an overloaded single-arg ctor
+      request.setName(name);
+      ResponseEntity<String> response = template.postForEntity(url("/patrons"), request, String.class);
+      return response.getBody();
+   }
+
+   public List<PatronRequest> retrievePatrons() {
+      ResponseEntity<PatronRequest[]> response = template.getForEntity(url("/patrons"), PatronRequest[].class);
+      System.out.println("response:"+ Arrays.toString(response.getBody()));
+      List<PatronRequest> asList2 = asList(response.getBody());
+      System.out.println("response:"+ asList2);
+      return asList2;
+   }
+
+   public void clear() {
+      template.postForEntity(url("/clear"), null, null);
    }
 }
