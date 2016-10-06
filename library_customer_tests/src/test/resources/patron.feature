@@ -4,7 +4,7 @@ Feature: Patrons
    So that we increase circulation in the library
    
 Background:
-   Given an empty library system
+   Given a clean library system
 
 Scenario: Add new patron
    Given a librarian adds a patron named Anastasius 

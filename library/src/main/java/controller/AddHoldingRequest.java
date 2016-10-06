@@ -1,21 +1,22 @@
 package controller;
 
 public class AddHoldingRequest {
-   private String holdingBarcode;
-   private String branchId;
+   private String sourceId;
+   private String branchScanCode;
 
    public String getSourceId() {
-      return holdingBarcode;
-   }
-   public String getBranchId() {
-      return branchId;
+      return sourceId;
    }
 
-   public void setHoldingBarcode(String holdingBarcode) {
-      this.holdingBarcode = holdingBarcode;
+   public String getBranchScanCode() {
+      return branchScanCode;
    }
 
-   public void setBranchId(String branchId) {
-      this.branchId = branchId;
+   public void setSourceId(String sourceId) {
+      this.sourceId = sourceId;
+   }
+
+   public void setBranchScanCode(String branchScanCode) {
+      this.branchScanCode = branchScanCode;
    }
 }

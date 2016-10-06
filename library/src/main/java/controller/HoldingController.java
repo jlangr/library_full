@@ -1,23 +1,27 @@
 package controller;
 
 import org.springframework.web.bind.annotation.*;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
 import api.library.HoldingService;
 
 @RestController
+@RequestMapping("holdings")
 public class HoldingController {
    private HoldingService service = new HoldingService();
 
-   @RequestMapping(value = "/holdings", method = { POST })
-   public void addHolding(@RequestBody AddHoldingRequest request) {
+   @PostMapping
+   public String addHolding(@RequestBody AddHoldingRequest request) {
       // TODO need material type also
       // Does API format change?
-      service.add(request.getSourceId(), request.getBranchId());
+      return service.add(request.getSourceId(), request.getBranchScanCode());
    }
 
-   @RequestMapping(value = "/holdings/{holdingBarcode}", method = { GET })
+   @PostMapping(value = "/checkout")
+   public void checkout(@RequestBody CheckoutRequest request) {
+      service.checkOut(request.getPatronId(), request.getHoldingBarcode(), request.getCheckoutDate());
+   }
+
+   @GetMapping(value = "{holdingBarcode}")
    public HoldingResponse retrieve(@PathVariable("holdingBarcode") String holdingBarcode) {
-      System.out.println("barcode:" + holdingBarcode);
       return new HoldingResponse(service.find(holdingBarcode));
    }
 }

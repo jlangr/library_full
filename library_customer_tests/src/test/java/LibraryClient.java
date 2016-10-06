@@ -34,10 +34,11 @@ public class LibraryClient {
 	   return String.format(SERVER + doc);
 	}
 
-   public void addBranch(String name) {
+   public String addBranch(String name) {
       BranchRequest request = new BranchRequest();
       request.setName(name);
-      template.postForEntity(url("/branches"), request, String.class);
+      ResponseEntity<String> response = template.postForEntity(url("/branches"), request, String.class);
+      return response.getBody();
    }
 
    public List<BranchRequest> retrieveBranches(String user) {
@@ -55,13 +56,32 @@ public class LibraryClient {
 
    public List<PatronRequest> retrievePatrons() {
       ResponseEntity<PatronRequest[]> response = template.getForEntity(url("/patrons"), PatronRequest[].class);
-      System.out.println("response:"+ Arrays.toString(response.getBody()));
-      List<PatronRequest> asList2 = asList(response.getBody());
-      System.out.println("response:"+ asList2);
-      return asList2;
+      return asList(response.getBody());
+   }
+
+   public String addHolding(String sourceId, String branchScanCode) {
+      AddHoldingRequest request = new AddHoldingRequest();
+      request.setBranchScanCode(branchScanCode);
+      request.setSourceId(sourceId);
+      ResponseEntity<String> response = template.postForEntity(url("/holdings"), request, String.class);
+      return response.getBody();
    }
 
    public void clear() {
       template.postForEntity(url("/clear"), null, null);
+   }
+
+   public void checkOutHolding(String patronId, String barcode, Date date) {
+      CheckoutRequest request = new CheckoutRequest();
+      request.setPatronId(patronId);
+      request.setHoldingBarcode(barcode);
+      request.setCheckoutDate(date);
+      template.postForEntity(url("/holdings/checkout"), request, String.class);
+   }
+
+   public HoldingResponse retrieveHolding(String holdingBarcode) {
+      ResponseEntity<HoldingResponse> response =
+         template.getForEntity(url("/holdings/" + holdingBarcode), HoldingResponse.class);
+       return response.getBody();
    }
 }

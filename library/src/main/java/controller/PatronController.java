@@ -12,16 +12,14 @@ public class PatronController {
 
    @PostMapping
    public String add(@RequestBody PatronRequest patronRequest) {
-      System.out.println("add patron" + patronRequest.getName());
+      System.out.println("adding patron:" + patronRequest.getName());
       return service.add(patronRequest.getName());
    }
 
    @GetMapping
    public List<PatronRequest> retrieveAll() {
-      List<PatronRequest> collect = service.allPatrons().stream()
+      return service.allPatrons().stream()
          .map(patron -> new PatronRequest(patron))
          .collect(toList());
-      System.out.println("collection:" + collect);
-      return collect;
    }
 }
