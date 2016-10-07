@@ -21,4 +21,9 @@ public class PatronController {
          .map(patron -> new PatronRequest(patron))
          .collect(toList());
    }
+
+   @GetMapping(value = "{patronId}")
+   public PatronRequest retrieve(@PathVariable("patronId") String patronId) {
+      return new PatronRequest(service.find(patronId));
+   }
 }

@@ -75,6 +75,8 @@ public class Stepdefs {
 
    @Then("^the patron's fine balance is (\\d+)$")
    public void assertFineBalance(int expectedFineBalance) {
+      PatronRequest patron = libraryClient.retrievePatron(patronId);
+      assertThat(expectedFineBalance, equalTo(patron.getFineBalance()));
    }
 
    @Given("^a librarian adds a patron named (.*)$")

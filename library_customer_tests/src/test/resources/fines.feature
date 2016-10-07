@@ -16,4 +16,16 @@ Scenario: Book incurs no fine when returned on due date
    Given an available book
    And a patron checks out the book on 2017/4/1
    When the book is returned on 2017/4/22
+   Then the patron's fine balance is 0
+   
+Scenario: Book incurs fine when returned after due date
+   Given an available book
+   And a patron checks out the book on 2017/5/1
+   When the book is returned on 2017/5/23
    Then the patron's fine balance is 10
+
+Scenario: Late book fine balance is multiple of days
+   Given an available book
+   And a patron checks out the book on 2017/5/1
+   When the book is returned on 2017/5/25
+   Then the patron's fine balance is 30

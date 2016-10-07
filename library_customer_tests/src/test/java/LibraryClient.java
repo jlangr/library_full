@@ -92,4 +92,10 @@ public class LibraryClient {
       request.setCheckinDate(date);
       template.postForEntity(url("/holdings/checkin"), request, String.class);
    }
+
+   public PatronRequest retrievePatron(String patronId) {
+      ResponseEntity<PatronRequest> response =
+         template.getForEntity(url("/patrons/" + patronId), PatronRequest.class);
+       return response.getBody();
+   }
 }
