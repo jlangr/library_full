@@ -3,6 +3,10 @@ import cucumber.api.junit.Cucumber;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(plugin={"pretty"}, features="src/test/resources", monochrome=true)
+@CucumberOptions(
+   plugin={"pretty"},
+   features="src/test/resources",
+   tags={"~@ignore"},
+   monochrome=true)
 public class RunCukesTest {
 }

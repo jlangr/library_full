@@ -6,6 +6,7 @@ import controller.*;
 import cucumber.api.DataTable;
 import cucumber.api.java.en.*;
 
+// TODO does Cucumber support World like Cucumber for Ruby?
 public class Stepdefs {
    private LibraryClient libraryClient = new LibraryClient();
    private List<BranchRequest> branches;
@@ -13,6 +14,7 @@ public class Stepdefs {
    private Map<String,String> branchesByName = new HashMap<>();
    private String holdingBarcode;
    private String patronId;
+   private int checkoutResponse;
 
    @Given("^a clean library system$")
    public void clear() {
@@ -53,8 +55,12 @@ public class Stepdefs {
    @Given("^a patron checks out the book on (\\d+)/(\\d+)/(\\d+)$")
    public void patronChecksOutHolding(int year, int month, int dayOfMonth) {
       addPatron("");
-      createHolding();
-      libraryClient.checkOutHolding(patronId, holdingBarcode, create(year, month, dayOfMonth));
+      checkoutResponse = libraryClient.checkOutHolding(patronId, holdingBarcode, create(year, month, dayOfMonth));
+   }
+
+   @Then("^the client is informed of a conflict")
+   public void assertConflict() {
+      assertThat(checkoutResponse, equalTo(409));
    }
 
    @Then("^the due date is (\\d+)/(\\d+)/(\\d+)$")

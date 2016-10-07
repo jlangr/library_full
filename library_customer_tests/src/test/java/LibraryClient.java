@@ -1,38 +1,39 @@
 import java.util.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import controller.*;
 import static java.util.Arrays.asList;
 
 public class LibraryClient {
-	private RestTemplate template = new RestTemplate();
+   private RestTemplate template = new RestTemplate();
 
-	public LibraryClient() {
-		prepareRestTemplate();
-	}
+   public LibraryClient() {
+      prepareRestTemplate();
+   }
 
-	private void prepareRestTemplate() {
-		template = new RestTemplate();
+   private void prepareRestTemplate() {
+      template = new RestTemplate();
 
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JavaTimeModule());
-		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+      ObjectMapper mapper = new ObjectMapper();
+      mapper.registerModule(new JavaTimeModule());
+      mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-		MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
-		messageConverter.setPrettyPrint(false);
-		messageConverter.setObjectMapper(mapper);
-		template.getMessageConverters().removeIf(m -> m.getClass().getName().equals(MappingJackson2HttpMessageConverter.class.getName()));
-		template.getMessageConverters().add(messageConverter);
-	}
+      MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
+      messageConverter.setPrettyPrint(false);
+      messageConverter.setObjectMapper(mapper);
+      template.getMessageConverters()
+         .removeIf(m -> m.getClass().getName().equals(MappingJackson2HttpMessageConverter.class.getName()));
+      template.getMessageConverters().add(messageConverter);
+   }
 
-	public static final String SERVER = "http://localhost:3003";
+   public static final String SERVER = "http://localhost:3003";
 
-	private String url(String doc) {
-	   return String.format(SERVER + doc);
-	}
+   private String url(String doc) {
+      return String.format(SERVER + doc);
+   }
 
    public String addBranch(String name) {
       BranchRequest request = new BranchRequest();
@@ -42,7 +43,8 @@ public class LibraryClient {
    }
 
    public List<BranchRequest> retrieveBranches(String user) {
-      ResponseEntity<BranchRequest[]> response = template.getForEntity(url("/branches"), BranchRequest[].class);
+      ResponseEntity<BranchRequest[]> response = template.getForEntity(url("/branches"),
+         BranchRequest[].class);
       return asList(response.getBody());
    }
 
@@ -55,7 +57,8 @@ public class LibraryClient {
    }
 
    public List<PatronRequest> retrievePatrons() {
-      ResponseEntity<PatronRequest[]> response = template.getForEntity(url("/patrons"), PatronRequest[].class);
+      ResponseEntity<PatronRequest[]> response = template.getForEntity(url("/patrons"),
+         PatronRequest[].class);
       return asList(response.getBody());
    }
 
@@ -71,18 +74,23 @@ public class LibraryClient {
       template.postForEntity(url("/clear"), null, null);
    }
 
-   public void checkOutHolding(String patronId, String barcode, Date date) {
+   public int checkOutHolding(String patronId, String barcode, Date date) {
       CheckoutRequest request = new CheckoutRequest();
       request.setPatronId(patronId);
       request.setHoldingBarcode(barcode);
       request.setCheckoutDate(date);
-      template.postForEntity(url("/holdings/checkout"), request, String.class);
+      try {
+         return template.postForEntity(url("/holdings/checkout"), request, String.class)
+            .getStatusCodeValue();
+      } catch (HttpStatusCodeException exception) {
+         return exception.getRawStatusCode();
+      }
    }
 
    public HoldingResponse retrieveHolding(String holdingBarcode) {
-      ResponseEntity<HoldingResponse> response =
-         template.getForEntity(url("/holdings/" + holdingBarcode), HoldingResponse.class);
-       return response.getBody();
+      ResponseEntity<HoldingResponse> response = template.getForEntity(url("/holdings/" + holdingBarcode),
+         HoldingResponse.class);
+      return response.getBody();
    }
 
    public void checkInHolding(String holdingBarcode, String branchScanCode, Date date) {
@@ -94,8 +102,8 @@ public class LibraryClient {
    }
 
    public PatronRequest retrievePatron(String patronId) {
-      ResponseEntity<PatronRequest> response =
-         template.getForEntity(url("/patrons/" + patronId), PatronRequest.class);
-       return response.getBody();
+      ResponseEntity<PatronRequest> response = template.getForEntity(url("/patrons/" + patronId),
+         PatronRequest.class);
+      return response.getBody();
    }
 }

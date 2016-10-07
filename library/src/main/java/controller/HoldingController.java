@@ -1,7 +1,9 @@
 package controller;
 
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
 import api.library.HoldingService;
+import domain.core.HoldingAlreadyCheckedOutException;
 
 @RestController
 @RequestMapping("holdings")
@@ -16,8 +18,13 @@ public class HoldingController {
    }
 
    @PostMapping(value = "/checkout")
-   public void checkout(@RequestBody CheckoutRequest request) {
-      service.checkOut(request.getPatronId(), request.getHoldingBarcode(), request.getCheckoutDate());
+   public void checkout(@RequestBody CheckoutRequest request, HttpServletResponse response) {
+      try {
+         service.checkOut(request.getPatronId(), request.getHoldingBarcode(), request.getCheckoutDate());
+      }
+      catch (HoldingAlreadyCheckedOutException exception) {
+         response.setStatus(409);
+      }
    }
 
    @PostMapping(value = "/checkin")

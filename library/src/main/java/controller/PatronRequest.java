@@ -2,11 +2,10 @@ package controller;
 
 import domain.core.Patron;
 
-// TODO serializable?
 public class PatronRequest {
    private String name;
    private String id;
-   private Integer fineBalance;
+   private int fineBalance;
 
    public PatronRequest() {
    }
@@ -33,12 +32,6 @@ public class PatronRequest {
       return id;
    }
 
-   // TODO does it have to be Integer?
    public void setFineBalance(Integer fineBalance) { this.fineBalance = fineBalance; }
-   public Integer getFineBalance() { return fineBalance; }
-
-   @Override
-   public String toString() {
-      return "[Patron:] " + name + " (" + id + ")";
-   }
+   public int getFineBalance() { return fineBalance; }
 }
