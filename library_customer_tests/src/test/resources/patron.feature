@@ -10,5 +10,5 @@ Scenario: Add new patron
    Given a librarian adds a patron named Anastasius 
    When a librarian requests a list of all patrons
    Then the client shows the following patrons:
-   | name |
-   | Anastasius |
+   | name | fine balance |
+   | Anastasius | 0 |

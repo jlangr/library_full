@@ -12,7 +12,6 @@ public class PatronController {
 
    @PostMapping
    public String add(@RequestBody PatronRequest patronRequest) {
-      System.out.println("adding patron:" + patronRequest.getName());
       return service.add(patronRequest.getName());
    }
 

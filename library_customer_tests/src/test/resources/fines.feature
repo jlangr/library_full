@@ -12,8 +12,8 @@ Scenario: Due date for book is 21 days after checkout
    Then the due date is 2017/3/22
    
 # TODO best way to comment out scenario?
-#Scenario: Book incurs no fine when returned on due date
-#   Given an available book
-#   And a patron checks out the book on 2017/4/1
-#   When the book is returned on 2017/4/22
-#   Then the patron's fine balance is k
+Scenario: Book incurs no fine when returned on due date
+   Given an available book
+   And a patron checks out the book on 2017/4/1
+   When the book is returned on 2017/4/22
+   Then the patron's fine balance is 10

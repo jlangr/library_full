@@ -84,4 +84,12 @@ public class LibraryClient {
          template.getForEntity(url("/holdings/" + holdingBarcode), HoldingResponse.class);
        return response.getBody();
    }
+
+   public void checkInHolding(String holdingBarcode, String branchScanCode, Date date) {
+      CheckinRequest request = new CheckinRequest();
+      request.setHoldingBarcode(holdingBarcode);
+      request.setBranchScanCode(branchScanCode);
+      request.setCheckinDate(date);
+      template.postForEntity(url("/holdings/checkin"), request, String.class);
+   }
 }
