@@ -30,6 +30,16 @@ public class Stepdefs {
       addBranch(null, name);
    }
 
+   @Given("^a library system with one book$")
+   public void addOneBookAtNewLibrary() {
+      libraryClient.clear();
+      libraryClient.useLocalClassificationService();
+      libraryClient.addBook(new MaterialDetails("123", "", "", "123", ""));
+      addBranch(null, "branch");
+      addBookToBranch("123", "branch");
+// TODO dup
+   }
+
    @When("^(.*) adds? a branch named \"(.*)\"")
    public void addBranch(String user, String name) {
       String scanCode = libraryClient.addBranch(name);
@@ -46,19 +56,9 @@ public class Stepdefs {
       expectedBranches.unorderedDiff(branches);
    }
 
-   @Given("^an available book$")
-   public void createHolding() {
-      holdingBarcode = createAbitraryHoldingAtFirstBranch();
-   }
-
    @Given("^a book with source id (\\d+) is added at branch \"([^\"]*)\"$")
    public void addBookToBranch(String sourceId, String branchName) {
       holdingBarcode = libraryClient.addHolding(sourceId, branchesByName.get(branchName));
-   }
-
-   // CORRELATE to what the test adds
-   private String createAbitraryHoldingAtFirstBranch() {
-      return libraryClient.addHolding("123", firstBranchScanCode());
    }
 
    @Given("^a patron checks out the book on (\\d+)/(\\d+)/(\\d+)$")

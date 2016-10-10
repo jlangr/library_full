@@ -4,11 +4,7 @@ Feature: Fines
    So that we can encourage maximum book availability.
    
 Background:
-   Given a library system with a branch named "East"
-   And a local classification service with:
-      | source id | classification | format |
-      | 123       | QA-8675309     | Book   |
-   And a book with source id 123 is added at branch "East"
+   Given a library system with one book
 
 Scenario: Due date for book is 21 days after checkout
    When a patron checks out the book on 2017/3/1
