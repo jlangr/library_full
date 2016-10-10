@@ -16,6 +16,9 @@ public class HoldingService {
    }
 
    private MaterialDetails retrieveMaterialDetails(String sourceId) {
+      System.out.println("retrieving source id: " + sourceId);
+      System.out.println("service type: " + ClassificationApiFactory.getService().getClass());
+      System.out.println(ClassificationApiFactory.getService().toString());
       MaterialDetails material =
             ClassificationApiFactory.getService().getMaterialDetails(sourceId);
       if (material == null)

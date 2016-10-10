@@ -1,12 +1,15 @@
+package cucumber;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static util.DateUtil.create;
 import java.util.*;
+import com.loc.material.api.*;
 import controller.*;
 import cucumber.api.DataTable;
 import cucumber.api.java.en.*;
+import library.LibraryClient;
 
-// TODO does Cucumber support World like Cucumber for Ruby?
+// TODO use PicoContainer and injection between stepdefs?
 public class Stepdefs {
    private LibraryClient libraryClient = new LibraryClient();
    private List<BranchRequest> branches;
@@ -23,7 +26,7 @@ public class Stepdefs {
 
    @Given("^a library system with a branch named \"(.*)\"$")
    public void clearedSystemWithBranch(String name) {
-      clear(); // TODO bad form to call other steps?
+      libraryClient.clear();
       addBranch(null, name);
    }
 
@@ -48,6 +51,12 @@ public class Stepdefs {
       holdingBarcode = createAbitraryHoldingAtFirstBranch();
    }
 
+   @Given("^a book with source id (\\d+) is added at branch \"([^\"]*)\"$")
+   public void addBookToBranch(String sourceId, String branchName) {
+      holdingBarcode = libraryClient.addHolding(sourceId, branchesByName.get(branchName));
+   }
+
+   // CORRELATE to what the test adds
    private String createAbitraryHoldingAtFirstBranch() {
       return libraryClient.addHolding("123", firstBranchScanCode());
    }
@@ -98,5 +107,25 @@ public class Stepdefs {
    @Then("^the client shows the following patrons:$")
    public void assertPatrons(DataTable expectedPatrons) {
       expectedPatrons.unorderedDiff(patrons);
+   }
+
+   @Given("^a local classification service with:$")
+   public void classificationServiceData(DataTable books) {
+      libraryClient.useLocalClassificationService();
+      books.asList(MaterialDetails.class)
+         .stream()
+         .forEach(book -> libraryClient.addBook(book));
+   }
+
+   @When("^a libraran adds a book with source id (\\d+) at branch \"([^\"]*)\"$")
+   public void a_libraran_adds_a_book_with_source_id_at_branch(String sourceId, String branchName) {
+   }
+
+   @When("^a librarian adds a book with source id (\\d+) at branch \"([^\"]*)\"$")
+   public void a_librarian_adds_a_book_with_source_id_at_branch(String sourceId, String branchName) {
+   }
+
+   @Then("^the \"([^\"]*)\" branch contains the following holdings:$")
+   public void the_branch_contains_the_following_materials(String branchName, DataTable holdings) {
    }
 }

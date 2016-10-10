@@ -7,6 +7,10 @@ public class MaterialDetails {
    private String year;
    private MaterialType format;
    private String classification;
+   private String type;
+
+   public MaterialDetails() {
+   }
 
    public MaterialDetails(String sourceId,
          String author,
@@ -52,6 +56,22 @@ public class MaterialDetails {
    }
 
    public MaterialType getFormat() {
+      if (format == null)
+         format = MaterialType.valueOf(type);
       return format;
+   }
+
+   public void setFormat(MaterialType format) {
+      this.format = format;
+   }
+
+   // TODO ugly way to do this. Create new separate type?
+   public void setType(String type) {
+      this.type = type;
+   }
+
+   @Override
+   public String toString() {
+      return getFormat() + ": " + getClassification() + " " + getSourceId() + " " + getTitle();
    }
 }

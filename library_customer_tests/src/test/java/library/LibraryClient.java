@@ -1,14 +1,18 @@
+package library;
+import static java.util.Arrays.asList;
 import java.util.*;
+import java.util.logging.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.loc.material.api.MaterialDetails;
 import controller.*;
-import static java.util.Arrays.asList;
 
 public class LibraryClient {
    private RestTemplate template = new RestTemplate();
+   private Logger logger;
 
    public LibraryClient() {
       prepareRestTemplate();
@@ -16,6 +20,8 @@ public class LibraryClient {
 
    private void prepareRestTemplate() {
       template = new RestTemplate();
+      logger = Logger.getLogger("org.springframework.web.client.RestTemplate");
+      logger.setLevel(Level.OFF);
 
       ObjectMapper mapper = new ObjectMapper();
       mapper.registerModule(new JavaTimeModule());
@@ -70,10 +76,20 @@ public class LibraryClient {
       return response.getBody();
    }
 
+   // library back door
    public void clear() {
       template.postForEntity(url("/clear"), null, null);
    }
 
+   public void useLocalClassificationService() {
+      template.postForEntity(url("/use_local_classification"), null, null);
+   }
+
+   public void addBook(MaterialDetails book) {
+      template.postForEntity(url("/materials"), book, null);
+   }
+
+   // holding stuff
    public int checkOutHolding(String patronId, String barcode, Date date) {
       CheckoutRequest request = new CheckoutRequest();
       request.setPatronId(patronId);
