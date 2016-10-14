@@ -82,6 +82,16 @@ public class HoldingTest {
    }
 
    @Test
+   public void dateDueNullWhenCheckedOutIsNull() {
+      assertThat(h.dateDue(), equalTo(null));
+   }
+
+   @Test
+   public void daysLateIsZeroWhenDateDueIsNull() {
+      assertThat(h.daysLate(), equalTo(0));
+   }
+
+   @Test
    public void testSomething() {
       // movie
       checkOutToday(DR_STRANGELOVE, eastBranch);

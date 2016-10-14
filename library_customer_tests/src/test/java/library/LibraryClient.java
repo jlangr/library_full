@@ -122,4 +122,10 @@ public class LibraryClient {
          PatronRequest.class);
       return response.getBody();
    }
+
+   // can you retrieve a list instead of an array?
+   public List<HoldingResponse> retrieveHoldingsAtBranch(String branchScanCode) {
+      ResponseEntity<HoldingResponse[]> response = template.getForEntity(url("/holdings/branches/" + branchScanCode), HoldingResponse[].class);
+      return asList(response.getBody());
+   }
 }

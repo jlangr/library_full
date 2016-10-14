@@ -11,8 +11,10 @@ Scenario: Errors when attempting to check out book twice
    When a patron checks out the book on 2017/3/2
    Then the client is informed of a conflict
    
+Scenario: The book is available
+   Then the book is available
+#   
 #Scenario: Checked out book added to patron
-#   Given an available book named "The Trial"
 #   When a patron checks out the book
-#   Then 
+#   Then the patron has the book
    

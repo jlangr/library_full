@@ -50,4 +50,13 @@ public class HoldingStore implements Iterable<Holding> {
    public Iterator<Holding> iterator() {
       return holdings.values().iterator();
    }
+
+   // TODO test
+   public List<Holding> findByBranch(String branchScanCode) {
+      List<Holding> results = new ArrayList<>();
+      for (Holding holding: this)
+         if (holding.getBranch().getScanCode().equals(branchScanCode))
+            results.add(holding);
+      return results;
+   }
 }

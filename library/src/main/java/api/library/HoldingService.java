@@ -16,9 +16,6 @@ public class HoldingService {
    }
 
    private MaterialDetails retrieveMaterialDetails(String sourceId) {
-      System.out.println("retrieving source id: " + sourceId);
-      System.out.println("service type: " + ClassificationApiFactory.getService().getClass());
-      System.out.println(ClassificationApiFactory.getService().toString());
       MaterialDetails material =
             ClassificationApiFactory.getService().getMaterialDetails(sourceId);
       if (material == null)
@@ -49,6 +46,11 @@ public class HoldingService {
 
    public Holding find(String barCode) {
       return catalog.find(barCode);
+   }
+
+   // TODO test
+   public List<Holding> findByBranch(String branchScanCode) {
+      return catalog.findByBranch(branchScanCode);
    }
 
    public void transfer(String barcode, String branchScanCode) {

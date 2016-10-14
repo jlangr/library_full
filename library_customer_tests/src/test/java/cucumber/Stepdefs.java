@@ -14,7 +14,7 @@ public class Stepdefs {
    private LibraryClient libraryClient = new LibraryClient();
    private List<BranchRequest> branches;
    private List<PatronRequest> patrons;
-   private Map<String,String> branchesByName = new HashMap<>();
+   private Map<String,String> branchScanCodes = new HashMap<>();
    private String holdingBarcode;
    private String patronId;
    private int checkoutResponse;
@@ -43,7 +43,7 @@ public class Stepdefs {
    @When("^(.*) adds? a branch named \"(.*)\"")
    public void addBranch(String user, String name) {
       String scanCode = libraryClient.addBranch(name);
-      branchesByName.put(name, scanCode);
+      branchScanCodes.put(name, scanCode);
    }
 
    @When("^(.*) requests a list of all branches")
@@ -58,7 +58,7 @@ public class Stepdefs {
 
    @Given("^a book with source id (\\d+) is added at branch \"([^\"]*)\"$")
    public void addBookToBranch(String sourceId, String branchName) {
-      holdingBarcode = libraryClient.addHolding(sourceId, branchesByName.get(branchName));
+      holdingBarcode = libraryClient.addHolding(sourceId, branchScanCodes.get(branchName));
    }
 
    @Given("^a patron checks out the book on (\\d+)/(\\d+)/(\\d+)$")
@@ -85,7 +85,7 @@ public class Stepdefs {
    }
 
    private String firstBranchScanCode() {
-      return branchesByName.values().iterator().next();
+      return branchScanCodes.values().iterator().next();
    }
 
    @Then("^the patron's fine balance is (\\d+)$")
@@ -117,15 +117,14 @@ public class Stepdefs {
          .forEach(book -> libraryClient.addBook(book));
    }
 
-   @When("^a libraran adds a book with source id (\\d+) at branch \"([^\"]*)\"$")
-   public void a_libraran_adds_a_book_with_source_id_at_branch(String sourceId, String branchName) {
-   }
-
-   @When("^a librarian adds a book with source id (\\d+) at branch \"([^\"]*)\"$")
-   public void a_librarian_adds_a_book_with_source_id_at_branch(String sourceId, String branchName) {
+   @When("^a librarian adds a book holding with source id (\\d+) at branch \"([^\"]*)\"$")
+   public void addBookHolding(String sourceId, String branchName) {
+      libraryClient.addHolding(sourceId, branchScanCodes.get(branchName));
    }
 
    @Then("^the \"([^\"]*)\" branch contains the following holdings:$")
-   public void the_branch_contains_the_following_materials(String branchName, DataTable holdings) {
+   public void assertBranchContains(String branchName, DataTable holdings) {
+      String branchScanCode = branchScanCodes.get(branchName);
+      List<HoldingResponse> branches = libraryClient.retrieveHoldingsAtBranch(branchScanCode);
    }
 }

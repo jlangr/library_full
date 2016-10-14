@@ -10,8 +10,8 @@ Background:
       | 999 | EF-3303 | Book |
 
  Scenario: Add holdings to the library system generates incremented barcodes
-   When a libraran adds a book with source id 123 at branch "East"
-   And a librarian adds a book with source id 123 at branch "East"
+   When a librarian adds a book holding with source id 123 at branch "East"
+   And a librarian adds a book holding with source id 123 at branch "East"
    Then the "East" branch contains the following holdings:
       | holding barcode | 
       | QA-8675309:1 |

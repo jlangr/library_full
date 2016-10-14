@@ -64,6 +64,7 @@ public class Holding {
    }
 
    public Date dateDue() {
+      if (dateCheckedOut == null) return null;
       return DateUtil.addDays(dateCheckedOut, getHoldingPeriod());
    }
 
@@ -78,7 +79,9 @@ public class Holding {
    }
 
    public int daysLate() {
-      return DateUtil.daysAfter(dateDue(), dateLastCheckedIn());
+      Date dateDue = dateDue();
+      if (dateDue == null) return 0;
+      return DateUtil.daysAfter(dateDue, dateLastCheckedIn());
    }
 
    public Date dateLastCheckedIn() {

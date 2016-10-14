@@ -5,6 +5,7 @@ import java.util.List;
 
 import persistence.HoldingStore;
 
+// TODO why does this exist
 public class Catalog implements Iterable<Holding> {
    private HoldingStore access = new HoldingStore();
 
@@ -32,5 +33,9 @@ public class Catalog implements Iterable<Holding> {
 
    public Holding find(String barCode) {
       return access.findByBarcode(barCode);
+   }
+
+   public List<Holding> findByBranch(String branchScanCode) {
+      return access.findByBranch(branchScanCode);
    }
 }

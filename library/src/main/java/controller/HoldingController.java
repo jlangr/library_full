@@ -1,9 +1,11 @@
 package controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
 import api.library.HoldingService;
-import domain.core.HoldingAlreadyCheckedOutException;
+import domain.core.*;
 
 @RestController
 @RequestMapping("holdings")
@@ -32,8 +34,20 @@ public class HoldingController {
       service.checkIn(request.getHoldingBarcode(), request.getCheckinDate(), request.getBranchScanCode());
    }
 
+   // TODO missing a leading slash? Used at all?
    @GetMapping(value = "{holdingBarcode}")
    public HoldingResponse retrieve(@PathVariable("holdingBarcode") String holdingBarcode) {
       return new HoldingResponse(service.find(holdingBarcode));
+   }
+
+   // TODO use query params instead!
+   @GetMapping(value = "/branches/{scanCode}") // WRONG
+   public List<HoldingResponse> retrieveHoldings(@PathVariable String scanCode) {
+      System.out.println("scan code = " + scanCode);
+      List<Holding> holdings = service.findByBranch(scanCode);
+      System.out.println("holdings:" + holdings);
+      return holdings.stream()
+         .map(holding -> new HoldingResponse(holding))
+         .collect(Collectors.toList());
    }
 }
