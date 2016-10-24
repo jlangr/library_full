@@ -19,9 +19,7 @@ public class LibraryController {
 
    @PostMapping(value="/materials")
    public void addMaterial(@RequestBody MaterialDetails material) {
-      System.out.println("adding material");
       LocalClassificationService service = (LocalClassificationService)ClassificationApiFactory.getService();
       service.addBook(material);
-      System.out.println("added material " + material.getSourceId() + " " + material.getClassification());
    }
 }

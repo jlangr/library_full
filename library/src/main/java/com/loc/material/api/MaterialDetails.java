@@ -70,6 +70,14 @@ public class MaterialDetails {
       this.type = type;
    }
 
+   public void setYear(String year) {
+      this.year = year;
+   }
+
+   public void setTitle(String title) {
+      this.title = title;
+   }
+
    @Override
    public String toString() {
       return getFormat() + ": " + getClassification() + " " + getSourceId() + " " + getTitle();

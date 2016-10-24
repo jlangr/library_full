@@ -125,6 +125,7 @@ public class Stepdefs {
    @Then("^the \"([^\"]*)\" branch contains the following holdings:$")
    public void assertBranchContains(String branchName, DataTable holdings) {
       String branchScanCode = branchScanCodes.get(branchName);
-      List<HoldingResponse> branches = libraryClient.retrieveHoldingsAtBranch(branchScanCode);
+      List<HoldingResponse> retrievedHoldings = libraryClient.retrieveHoldingsAtBranch(branchScanCode);
+      holdings.unorderedDiff(retrievedHoldings);
    }
 }

@@ -13,6 +13,6 @@ Background:
    When a librarian adds a book holding with source id 123 at branch "East"
    And a librarian adds a book holding with source id 123 at branch "East"
    Then the "East" branch contains the following holdings:
-      | holding barcode | 
+      | barcode | 
       | QA-8675309:1 |
       | QA-8675309:2 |
