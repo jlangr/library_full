@@ -34,7 +34,7 @@ public class Stepdefs {
    public void addOneBookAtNewLibrary() {
       libraryClient.clear();
       libraryClient.useLocalClassificationService();
-      libraryClient.addBook(new MaterialDetails("123", "", "", "123", ""));
+      libraryClient.addBook(new Material("123", "", "", "123", ""));
       addBranch(null, "branch");
       addBookToBranch("123", "branch");
 // TODO dup
@@ -112,7 +112,7 @@ public class Stepdefs {
    @Given("^a local classification service with:$")
    public void classificationServiceData(DataTable books) {
       libraryClient.useLocalClassificationService();
-      books.asList(MaterialDetails.class)
+      books.asList(Material.class)
          .stream()
          .forEach(book -> libraryClient.addBook(book));
    }

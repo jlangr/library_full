@@ -25,9 +25,9 @@ This test class is a mess. Some of the opportunities for cleanup:
  */
 
 public class HoldingTest {
-   private static final MaterialDetails THE_TRIAL = new MaterialDetails("10", "", "10", "", "");
-   private static final MaterialDetails DR_STRANGELOVE = new MaterialDetails("12", "", "11", "", MaterialType.DVD, "");
-   private static final MaterialDetails THE_REVENANT = new MaterialDetails("12", "", "11", "", MaterialType.NewReleaseDVD, "");
+   private static final Material THE_TRIAL = new Material("10", "", "10", "", "");
+   private static final Material DR_STRANGELOVE = new Material("12", "", "11", "", MaterialType.DVD, "");
+   private static final Material THE_REVENANT = new Material("12", "", "11", "", MaterialType.NewReleaseDVD, "");
    private Holding h;
    private static final Date TODAY = new Date();
    private static final int COPY_NUMBER_1 = 1;
@@ -131,13 +131,13 @@ public class HoldingTest {
       }
    }
 
-   private void checkOutToday(MaterialDetails material, Branch branch) {
+   private void checkOutToday(Material material, Branch branch) {
       h = new Holding(material, branch);
       h.checkOut(TODAY);
    }
 
-   static void assertMaterial(MaterialDetails expected, Holding holding) {
-      MaterialDetails actual = holding.getMaterial();
+   static void assertMaterial(Material expected, Holding holding) {
+      Material actual = holding.getMaterial();
       assertEquals(expected.getAuthor(), actual.getAuthor());
       assertEquals(expected.getClassification(), actual.getClassification());
       assertEquals(expected.getTitle(), actual.getTitle());

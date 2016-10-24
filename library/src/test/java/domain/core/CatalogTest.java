@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 import static util.matchers.HasExactlyItems.hasExactlyItems;
 import java.util.*;
 import org.junit.*;
-import com.loc.material.api.MaterialDetails;
+import com.loc.material.api.Material;
 import persistence.HoldingStore;
 
 public class CatalogTest {
@@ -49,7 +49,7 @@ public class CatalogTest {
    }
 
    private String addHoldingWithClassification(String classification) {
-      MaterialDetails material = new MaterialDetails("", "", "", classification, "");
+      Material material = new Material("", "", "", classification, "");
       Holding holding = holdingBuilder.with(material).create();
       return catalog.add(holding);
    }

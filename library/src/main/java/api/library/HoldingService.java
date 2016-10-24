@@ -15,9 +15,9 @@ public class HoldingService {
       return holding.getBarcode();
    }
 
-   private MaterialDetails retrieveMaterialDetails(String sourceId) {
-      MaterialDetails material =
-            ClassificationApiFactory.getService().getMaterialDetails(sourceId);
+   private Material retrieveMaterialDetails(String sourceId) {
+      Material material =
+            ClassificationApiFactory.getService().retrieveMaterial(sourceId);
       if (material == null)
          throw new InvalidSourceIdException();
       return material;

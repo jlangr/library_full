@@ -17,11 +17,11 @@ public class ClassificationService implements ClassificationApi {
    }
 
    @Override
-   public MaterialDetails getMaterialDetails(String sourceId) {
+   public Material retrieveMaterial(String sourceId) {
       Map<String, Object> response = retrieve(sourceId);
       System.out.println("in GMD;" + response);
 
-      MaterialDetails material = new MaterialDetails();
+      Material material = new Material();
       material.setTitle(getString(response, "title"));
       material.setYear(getString(response, "publish_date"));
       return material;

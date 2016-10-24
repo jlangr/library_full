@@ -1,6 +1,6 @@
 package com.loc.material.api;
 
-public class MaterialDetails {
+public class Material {
    private String sourceId;
    private String title;
    private String author;
@@ -9,10 +9,10 @@ public class MaterialDetails {
    private String classification;
    private String type;
 
-   public MaterialDetails() {
+   public Material() {
    }
 
-   public MaterialDetails(String sourceId,
+   public Material(String sourceId,
          String author,
          String title,
          String classification,
@@ -26,7 +26,7 @@ public class MaterialDetails {
       this.year = year;
    }
 
-   public MaterialDetails(String sourceId, String author, String title, String classification,
+   public Material(String sourceId, String author, String title, String classification,
          String year) {
       this(sourceId, author, title, classification, MaterialType.Book, year);
    }

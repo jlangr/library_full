@@ -22,8 +22,8 @@ public class HoldingService_WithBranchCreatedTest {
    }
 
    private String addHolding() {
-      MaterialDetails material = new MaterialDetails("123", "", "", "", "");
-      when(classificationApi.getMaterialDetails("123")).thenReturn(material);
+      Material material = new Material("123", "", "", "", "");
+      when(classificationApi.retrieveMaterial("123")).thenReturn(material);
       return service.add("123", branchScanCode);
    }
 

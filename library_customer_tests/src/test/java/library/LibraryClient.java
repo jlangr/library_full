@@ -7,7 +7,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.loc.material.api.MaterialDetails;
+import com.loc.material.api.Material;
 import controller.*;
 
 public class LibraryClient {
@@ -85,7 +85,7 @@ public class LibraryClient {
       template.postForEntity(url("/use_local_classification"), null, null);
    }
 
-   public void addBook(MaterialDetails book) {
+   public void addBook(Material book) {
       template.postForEntity(url("/materials"), book, null);
    }
 

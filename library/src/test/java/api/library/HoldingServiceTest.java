@@ -26,8 +26,8 @@ public class HoldingServiceTest {
    @Test
    public void usesClassificationServiceToRetrieveBookDetails() {
       String isbn = "9780141439594";
-      MaterialDetails material = new MaterialDetails(isbn, "", "", "", "");
-      when(classificationApi.getMaterialDetails(isbn)).thenReturn(material);
+      Material material = new Material(isbn, "", "", "", "");
+      when(classificationApi.retrieveMaterial(isbn)).thenReturn(material);
       String barcode = service.add(isbn, branchScanCode);
 
       Holding holding = service.find(barcode);

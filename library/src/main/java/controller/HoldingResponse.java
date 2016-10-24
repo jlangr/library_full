@@ -29,7 +29,7 @@ public class HoldingResponse implements Serializable {
       dateCheckedOut = holding.dateCheckedOut();
       dateLastCheckedIn = holding.dateLastCheckedIn();
 
-      MaterialDetails material = holding.getMaterial();
+      Material material = holding.getMaterial();
       author = material.getAuthor();
       title = material.getTitle();
       year = material.getYear();

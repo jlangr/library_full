@@ -30,8 +30,8 @@ public class HoldingService_CheckInCheckOutTest {
    }
 
    private String addBookHolding() {
-      MaterialDetails material = new MaterialDetails("123", "", "", "", MaterialType.Book, "");
-      when(classificationApi.getMaterialDetails("123")).thenReturn(material);
+      Material material = new Material("123", "", "", "", MaterialType.Book, "");
+      when(classificationApi.retrieveMaterial("123")).thenReturn(material);
       return service.add("123", branchScanCode);
    }
 

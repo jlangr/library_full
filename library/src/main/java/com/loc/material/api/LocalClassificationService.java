@@ -3,14 +3,14 @@ package com.loc.material.api;
 import java.util.*;
 
 public class LocalClassificationService implements ClassificationApi {
-   private Map<String,MaterialDetails> materials = new HashMap<>();
+   private Map<String,Material> materials = new HashMap<>();
 
    @Override
-   public MaterialDetails getMaterialDetails(String sourceId) {
+   public Material retrieveMaterial(String sourceId) {
       return materials.get(sourceId);
    }
 
-   public void addBook(MaterialDetails material) {
+   public void addBook(Material material) {
       materials.put(material.getSourceId(), material);
    }
 
