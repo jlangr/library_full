@@ -34,9 +34,10 @@ public class HoldingController {
       service.checkIn(request.getHoldingBarcode(), request.getCheckinDate(), request.getBranchScanCode());
    }
 
-   // TODO missing a leading slash? Used at all?
+   // TODO missing a leading slash?
    @GetMapping(value = "{holdingBarcode}")
    public HoldingResponse retrieve(@PathVariable("holdingBarcode") String holdingBarcode) {
+      System.out.println("retrieve " + holdingBarcode);
       return new HoldingResponse(service.find(holdingBarcode));
    }
 

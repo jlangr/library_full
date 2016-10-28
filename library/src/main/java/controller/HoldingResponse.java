@@ -6,7 +6,6 @@ import com.loc.material.api.*;
 import domain.core.Holding;
 
 public class HoldingResponse implements Serializable {
-
    private static final long serialVersionUID = 1L;
 
    private String author;
@@ -18,6 +17,7 @@ public class HoldingResponse implements Serializable {
    private Integer copyNumber;
    private Date dateCheckedOut;
    private Date dateLastCheckedIn;
+   private boolean isAvailable;
 
    public HoldingResponse() {
    }
@@ -26,6 +26,7 @@ public class HoldingResponse implements Serializable {
       barcode = holding.getBarcode();
       copyNumber = holding.getCopyNumber();
       dateDue = holding.dateDue();
+      isAvailable = holding.isAvailable();
       dateCheckedOut = holding.dateCheckedOut();
       dateLastCheckedIn = holding.dateLastCheckedIn();
 
@@ -41,7 +42,6 @@ public class HoldingResponse implements Serializable {
    }
 
    public void setTitle(String title) {
-      System.out.println("SET TITLE " + title);
       this.title = title;
    }
 
@@ -71,6 +71,10 @@ public class HoldingResponse implements Serializable {
 
    public void setCopyNumber(Integer copyNumber) {
       this.copyNumber = copyNumber;
+   }
+
+   public void setIsAvailable(boolean isAvailable) {
+      this.isAvailable = isAvailable;
    }
 
    public String getAuthor() {
@@ -107,5 +111,9 @@ public class HoldingResponse implements Serializable {
 
    public Integer getCopyNumber() {
       return copyNumber;
+   }
+
+   public boolean getIsAvailable() {
+      return isAvailable;
    }
 }

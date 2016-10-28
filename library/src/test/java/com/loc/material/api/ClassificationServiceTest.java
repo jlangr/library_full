@@ -25,11 +25,19 @@ public class ClassificationServiceTest {
       String isbn13 = "9780131482395";
       Map<Object, Object> responseMap = createMap(service.isbnKey(isbn13),
          createMap("title", "Agile Java",
-            "publish_date", "2005"));
+            "publish_date", "2005",
+            "authors", array(createMap("name", "Jeff Langr"))));
       when(restTemplate.getForObject(contains(isbn13), eq(Map.class))).thenReturn(responseMap);
 
       Material material = service.retrieveMaterial(isbn13);
 
       assertThat(material.getTitle(), equalTo("Agile Java"));
    }
+
+   private Object[] array(Object o) {
+      return new Object[] { o };
+   }
+
+   // TODO live integration test!
+   // how to mark / run only when integration--categories?
 }

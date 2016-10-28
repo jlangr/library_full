@@ -24,6 +24,7 @@ public class ClassificationService implements ClassificationApi {
       Material material = new Material();
       material.setTitle(getString(response, "title"));
       material.setYear(getString(response, "publish_date"));
+//      MAP<OBJECT,OBJECT>[] AUTHORS = (MAP<OBJECT, OBJECT>[])RESPONSE.GET("AUTHORS");
       return material;
    }
 

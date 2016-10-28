@@ -1,5 +1,5 @@
 package cucumber;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static util.DateUtil.create;
 import java.util.*;
@@ -67,6 +67,13 @@ public class Stepdefs {
       checkoutResponse = libraryClient.checkOutHolding(patronId, holdingBarcode, create(year, month, dayOfMonth));
    }
 
+   @Then("^the book is available")
+   public void assertAvailable() {
+      HoldingResponse holding = libraryClient.retrieveHolding(holdingBarcode);
+      assertThat(holding.getIsAvailable(), is(true));
+   }
+
+
    @Then("^the client is informed of a conflict")
    public void assertConflict() {
       assertThat(checkoutResponse, equalTo(409));
@@ -79,9 +86,8 @@ public class Stepdefs {
    }
 
    @When("^the book is returned on (\\d+)/(\\d+)/(\\d+)$")
-   public void returnHolding(int year, int month, int dayOfMonth) {
-      String aBranchScanCode = firstBranchScanCode();
-      libraryClient.checkInHolding(holdingBarcode, aBranchScanCode, create(year, month, dayOfMonth));
+   public void bookReturnedOn(int year, int month, int dayOfMonth) {
+      libraryClient.checkInHolding(holdingBarcode, firstBranchScanCode(), create(year, month, dayOfMonth));
    }
 
    private String firstBranchScanCode() {
