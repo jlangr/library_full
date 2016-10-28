@@ -4,23 +4,32 @@ Feature: Fines
    So that we can encourage maximum book availability.
    
 Background:
-   Given a library system with one book
+# TODO put this shit in a common place?
+   Given a clean library system
+   And a local classification service with:
+      | source id | classification | format |
+      | 123 | QA-8675309 | Book |
+      | 999 | EF-3303 | Book |
+   And a branch named "Rockrimmon" with the following holdings:
+   | source id | title |
+   | 123 | Catch-22 |
+   | 999 | 1984 |
 
 Scenario: Due date for book is 21 days after checkout
-   When a patron checks out the book on 2017/3/1
-   Then the due date is 2017/3/22
+   When a patron checks out Catch-22 on 2017/3/1
+   Then the due date for Catch-22 is 2017/3/22
    
 Scenario: Book incurs no fine when returned on due date
-   Given a patron checks out the book on 2017/4/1
-   When the book is returned on 2017/4/22
+   Given a patron checks out Catch-22 on 2017/4/1
+   When Catch-22 is returned on 2017/4/22
    Then the patron's fine balance is 0
    
 Scenario: Book incurs fine when returned after due date
-   Given a patron checks out the book on 2017/5/1
-   When the book is returned on 2017/5/23
+   Given a patron checks out Catch-22 on 2017/5/1
+   When Catch-22 is returned on 2017/5/23
    Then the patron's fine balance is 10
 
 Scenario: Late book fine balance is multiple of days
-   Given a patron checks out the book on 2017/5/1
-   When the book is returned on 2017/5/25
+   Given a patron checks out Catch-22 on 2017/5/1
+   When Catch-22 is returned on 2017/5/25
    Then the patron's fine balance is 30

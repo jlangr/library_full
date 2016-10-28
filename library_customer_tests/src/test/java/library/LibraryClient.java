@@ -128,4 +128,8 @@ public class LibraryClient {
       ResponseEntity<HoldingResponse[]> response = template.getForEntity(url("/holdings/branches/" + branchScanCode), HoldingResponse[].class);
       return asList(response.getBody());
    }
+
+   public void addBooks(List<Material> books) {
+      books.stream().forEach(book -> addBook(book));
+   }
 }
