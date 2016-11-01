@@ -28,4 +28,5 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-jetty")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile group: 'javax.mail', name: 'mail', version: '1.4.7'
+    compile group: 'com.google.guava', name: 'guava', version: '20.0'
 }

@@ -7,13 +7,19 @@ Background:
 # TODO put this shit in a common place?
    Given a clean library system
    And a local classification service with:
-      | source id | classification | format |
-      | 123 | QA-8675309 | Book |
-      | 999 | EF-3303 | Book |
+      | source id | classification | format | title |
+      | 123 | QA-8675309 | Book | Catch-22 |
+      | 999 | EF-3303 | Book | 1984 |
    And a branch named "Rockrimmon" with the following holdings:
    | source id | title |
    | 123 | Catch-22 |
    | 999 | 1984 |
+   
+# TODO: add holdings table above should just be the titles of the books!
+# So: the classification service can be added behind the scenes, using a generated source ID for each
+# book listed. The title is part of the Material. So on add of the book, the material may need to be
+# retrieved so that the title can be used as the key to store the new holding's classification.
+# TODO: books should be strings not single-word titles
 
 Scenario: Due date for book is 21 days after checkout
    When a patron checks out Catch-22 on 2017/3/1

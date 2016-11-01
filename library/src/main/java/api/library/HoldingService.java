@@ -48,7 +48,6 @@ public class HoldingService {
       return catalog.find(barCode);
    }
 
-   // TODO test
    public List<Holding> findByBranch(String branchScanCode) {
       return catalog.findByBranch(branchScanCode);
    }

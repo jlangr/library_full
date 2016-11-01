@@ -8,14 +8,12 @@ import api.library.HoldingService;
 import domain.core.*;
 
 @RestController
-@RequestMapping("holdings")
+@RequestMapping("/holdings")
 public class HoldingController {
    private HoldingService service = new HoldingService();
 
    @PostMapping
-   public String addHolding(@RequestBody AddHoldingRequest request) {
-      // TODO need material type also
-      // Does API format change?
+   public String addBookHolding(@RequestBody AddHoldingRequest request) {
       return service.add(request.getSourceId(), request.getBranchScanCode());
    }
 
@@ -34,21 +32,17 @@ public class HoldingController {
       service.checkIn(request.getHoldingBarcode(), request.getCheckinDate(), request.getBranchScanCode());
    }
 
-   // TODO missing a leading slash?
-   @GetMapping(value = "{holdingBarcode}")
-   public HoldingResponse retrieve(@PathVariable("holdingBarcode") String holdingBarcode) {
-      System.out.println("retrieve " + holdingBarcode);
-      return new HoldingResponse(service.find(holdingBarcode));
-   }
-
-   // TODO use query params instead!
-   @GetMapping(value = "/branches/{scanCode}") // WRONG
-   public List<HoldingResponse> retrieveHoldings(@PathVariable String scanCode) {
-      System.out.println("scan code = " + scanCode);
+   @GetMapping
+   public List<HoldingResponse> retrieveHoldingsByQuery(
+      @RequestParam(required=true, value="branchScanCode") String scanCode) {
       List<Holding> holdings = service.findByBranch(scanCode);
-      System.out.println("holdings:" + holdings);
       return holdings.stream()
          .map(holding -> new HoldingResponse(holding))
          .collect(Collectors.toList());
+   }
+
+   @GetMapping(value = "/{holdingBarcode}")
+   public HoldingResponse retrieve(@PathVariable("holdingBarcode") String holdingBarcode) {
+      return new HoldingResponse(service.find(holdingBarcode));
    }
 }

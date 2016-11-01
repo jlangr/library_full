@@ -4,6 +4,8 @@ import java.util.*;
 import org.springframework.web.client.RestTemplate;
 import util.RestUtil;
 
+// This class uses the Open Library API; see https://openlibrary.org/dev/docs/api/books
+
 public class ClassificationService implements ClassificationApi {
    public static final String SERVER = "http://openlibrary.org";
    private RestTemplate template;

@@ -1,11 +1,8 @@
 package controller;
 
-import java.io.Serializable;
 import java.util.Date;
 
-// TODO implement serializable--necessary?
-public class CheckinRequest implements Serializable {
-   private static final long serialVersionUID = 1L;
+public class CheckinRequest {
    private String holdingBarcode;
    private Date checkinDate;
    private String branchScanCode;

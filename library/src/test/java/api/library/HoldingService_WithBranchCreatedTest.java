@@ -15,7 +15,7 @@ public class HoldingService_WithBranchCreatedTest {
 
    @Before
    public void initialize() {
-      // TODO remove need to persist!
+      // TODO [x] stub instead, once real persistence in place
       LibraryData.deleteAll();
       ClassificationApiFactory.setService(classificationApi);
       branchScanCode = new BranchService().add("a branch name");

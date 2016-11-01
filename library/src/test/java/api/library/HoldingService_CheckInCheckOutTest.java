@@ -10,8 +10,6 @@ import com.loc.material.api.*;
 import domain.core.*;
 import util.DateUtil;
 
-// TODO stub to avoid persistence (even despite being in memory)
-
 public class HoldingService_CheckInCheckOutTest {
    private HoldingService service = new HoldingService();
    private PatronService patronService = new PatronService();

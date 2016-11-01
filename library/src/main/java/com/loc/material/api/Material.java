@@ -73,7 +73,7 @@ public class Material {
       this.format = format;
    }
 
-   // TODO ugly way to do this. Create new separate type?
+   // TODO [x] ugly way to do this. Create new separate type for DTO?
    public void setType(String type) {
       this.type = type;
    }

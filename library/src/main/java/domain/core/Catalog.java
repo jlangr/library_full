@@ -5,7 +5,6 @@ import java.util.List;
 
 import persistence.HoldingStore;
 
-// TODO why does this exist
 public class Catalog implements Iterable<Holding> {
    private HoldingStore access = new HoldingStore();
 

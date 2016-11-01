@@ -1,45 +1,21 @@
 package library;
 import static java.util.Arrays.asList;
 import java.util.*;
-import java.util.logging.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.*;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.loc.material.api.Material;
 import controller.*;
 
 public class LibraryClient {
-   private RestTemplate template = new RestTemplate();
-   private Logger logger;
-
-   public LibraryClient() {
-      prepareRestTemplate();
-   }
-
-   private void prepareRestTemplate() {
-      template = new RestTemplate();
-      logger = Logger.getLogger("org.springframework.web.client.RestTemplate");
-      logger.setLevel(Level.OFF);
-
-      ObjectMapper mapper = new ObjectMapper();
-      mapper.registerModule(new JavaTimeModule());
-      mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
-      MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
-      messageConverter.setPrettyPrint(false);
-      messageConverter.setObjectMapper(mapper);
-      template.getMessageConverters()
-         .removeIf(m -> m.getClass().getName().equals(MappingJackson2HttpMessageConverter.class.getName()));
-      template.getMessageConverters().add(messageConverter);
-   }
+   private RestTemplate template = RestTemplateFactory.create();
 
    public static final String SERVER = "http://localhost:3003";
 
    private String url(String doc) {
       return String.format(SERVER + doc);
    }
+
+   // -- branches --
 
    public String addBranch(String name) {
       BranchRequest request = new BranchRequest();
@@ -53,6 +29,8 @@ public class LibraryClient {
          BranchRequest[].class);
       return asList(response.getBody());
    }
+
+   // -- patrons --
 
    public String addPatron(String name) {
       PatronRequest request = new PatronRequest();
@@ -68,15 +46,13 @@ public class LibraryClient {
       return asList(response.getBody());
    }
 
-   public String addHolding(String sourceId, String branchScanCode) {
-      AddHoldingRequest request = new AddHoldingRequest();
-      request.setBranchScanCode(branchScanCode);
-      request.setSourceId(sourceId);
-      ResponseEntity<String> response = template.postForEntity(url("/holdings"), request, String.class);
+   public PatronRequest retrievePatron(String patronId) {
+      ResponseEntity<PatronRequest> response = template.getForEntity(url("/patrons/" + patronId),
+         PatronRequest.class);
       return response.getBody();
    }
 
-   // library back door
+   // -- library back door --
    public void clear() {
       template.postForEntity(url("/clear"), null, null);
    }
@@ -89,7 +65,16 @@ public class LibraryClient {
       template.postForEntity(url("/materials"), book, null);
    }
 
-   // holding stuff
+   // -- holdings --
+
+   public String addHolding(String sourceId, String branchScanCode) {
+      AddHoldingRequest request = new AddHoldingRequest();
+      request.setBranchScanCode(branchScanCode);
+      request.setSourceId(sourceId);
+      ResponseEntity<String> response = template.postForEntity(url("/holdings"), request, String.class);
+      return response.getBody();
+   }
+
    public int checkOutHolding(String patronId, String barcode, Date date) {
       CheckoutRequest request = new CheckoutRequest();
       request.setPatronId(patronId);
@@ -117,15 +102,8 @@ public class LibraryClient {
       template.postForEntity(url("/holdings/checkin"), request, String.class);
    }
 
-   public PatronRequest retrievePatron(String patronId) {
-      ResponseEntity<PatronRequest> response = template.getForEntity(url("/patrons/" + patronId),
-         PatronRequest.class);
-      return response.getBody();
-   }
-
-   // can you retrieve a list instead of an array?
    public List<HoldingResponse> retrieveHoldingsAtBranch(String branchScanCode) {
-      ResponseEntity<HoldingResponse[]> response = template.getForEntity(url("/holdings/branches/" + branchScanCode), HoldingResponse[].class);
+      ResponseEntity<HoldingResponse[]> response = template.getForEntity(url("/holdings?branchScanCode=" + branchScanCode), HoldingResponse[].class);
       return asList(response.getBody());
    }
 

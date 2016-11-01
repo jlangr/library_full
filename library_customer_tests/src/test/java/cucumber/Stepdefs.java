@@ -37,7 +37,6 @@ public class Stepdefs {
       libraryClient.addBook(new Material("123", "", "", "123", ""));
       addBranch(null, "branch");
       addBookAtBranch("123", "branch");
-// TODO dup
    }
 
    class AddHolding {
@@ -45,6 +44,7 @@ public class Stepdefs {
       public String sourceId;
    }
 
+   // TODO mess
    Map<String,String> holdingBarcodes = new HashMap<>();
 
    @Given("^a branch named \"([^\"]*)\" with the following holdings:$")
