@@ -1,6 +1,6 @@
 package com.loc.material.api;
 
-import java.util.Map;
+import java.util.*;
 import org.springframework.web.client.RestTemplate;
 import util.RestUtil;
 
@@ -18,14 +18,40 @@ public class ClassificationService implements ClassificationApi {
 
    @Override
    public Material retrieveMaterial(String sourceId) {
-      Map<String, Object> response = retrieve(sourceId);
-      System.out.println("in GMD;" + response);
+      return createMaterial(sourceId, retrieve(sourceId));
+   }
 
+   private Material createMaterial(String sourceId, Map<String, Object> response) {
       Material material = new Material();
+      material.setSourceId(sourceId);
+      material.setFormat(MaterialType.Book);
       material.setTitle(getString(response, "title"));
       material.setYear(getString(response, "publish_date"));
-//      MAP<OBJECT,OBJECT>[] AUTHORS = (MAP<OBJECT, OBJECT>[])RESPONSE.GET("AUTHORS");
+      material.setAuthor(getFirstAuthorName(response));
+      material.setClassification(getLibraryOfCongressClassification(response));
       return material;
+   }
+
+   private String getLibraryOfCongressClassification(Map<String, Object> response) {
+      @SuppressWarnings("unchecked")
+      Map<String, Object> classifications = (Map<String, Object>)response.get("classifications");
+      List<Object> libraryOfCongressClassifications = getList(classifications, "lc_classifications");
+      return (String)libraryOfCongressClassifications.get(0);
+   }
+
+   private String getFirstAuthorName(Map<String, Object> map) {
+      Map<String, Object> firstAuthor = getMap(getList(map, "authors"), 0);
+      return (String)firstAuthor.get("name");
+   }
+
+   @SuppressWarnings("unchecked")
+   private List<Object> getList(Map<String, Object> map, String key) {
+      return (List<Object>)map.get(key);
+   }
+
+   @SuppressWarnings("unchecked")
+   private Map<String, Object> getMap(List<Object> list, int index) {
+      return (Map<String, Object>)list.get(index);
    }
 
    private String getString(Map<String, Object> map, String key) {
@@ -39,11 +65,6 @@ public class ClassificationService implements ClassificationApi {
    @SuppressWarnings("unchecked")
    public Map<String, Object> retrieve(String sourceId) {
       Map<String, Object> response = template.getForObject(url(findByDoc(isbnKey(sourceId))), Map.class);
-   //      System.out.println(entry.get("authors"));
-   //      Map<String, Object> classifications = (Map<String, Object>)entry.get("classifications");
-   //      String[] lcClassifications = (String[])classifications.get("lc_classifications");
-   //      System.out.println(lcClassifications[0]);
-
       return (Map<String, Object>)response.get(isbnKey(sourceId));
    }
 

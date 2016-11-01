@@ -39,12 +39,20 @@ public class Material {
       this.sourceId = sourceId;
    }
 
+   public void setClassification(String classification) {
+      this.classification = classification;
+   }
+
    public String getClassification() {
       return classification;
    }
 
    public String getTitle() {
       return title;
+   }
+
+   public void setAuthor(String author) {
+      this.author = author;
    }
 
    public String getAuthor() {
@@ -80,6 +88,6 @@ public class Material {
 
    @Override
    public String toString() {
-      return getFormat() + ": " + getClassification() + " " + getSourceId() + " " + getTitle();
+      return getFormat() + ": " + getClassification() + " " + getSourceId() + " " + getTitle() + " (" + getAuthor() + ")";
    }
 }
