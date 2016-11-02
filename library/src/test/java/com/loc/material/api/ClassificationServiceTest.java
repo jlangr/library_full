@@ -45,7 +45,6 @@ public class ClassificationServiceTest {
 
    @Category(Slow.class)
    @Test
-   // TODO Integration. Use JUnit categories to run?
    public void liveRetrieve() {
       ClassificationService liveService = new ClassificationService();
 
