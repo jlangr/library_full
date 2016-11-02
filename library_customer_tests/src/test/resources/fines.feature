@@ -4,7 +4,7 @@ Feature: Fines
    So that we can encourage maximum book availability.
    
 Background:
-# TODO put this shit in a common place?
+# TODO how to put this in a common place?
    Given a clean library system
    And a local classification service with:
       | source id | classification | format | title |

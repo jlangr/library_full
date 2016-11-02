@@ -12,10 +12,7 @@ import library.LibraryClient;
 // TODO use PicoContainer and injection between stepdefs?
 public class Stepdefs {
    private LibraryClient libraryClient = new LibraryClient();
-   private List<BranchRequest> branches;
-   private List<PatronRequest> patrons;
-   private Map<String,String> branchScanCodes = new HashMap<>();
-   private String holdingBarcode;
+   private List<PatronRequest> retrievedPatrons;
    private String patronId;
    private int checkoutResponse;
 
@@ -27,7 +24,7 @@ public class Stepdefs {
    @Given("^a library system with a branch named \"(.*)\"$")
    public void clearedSystemWithBranch(String name) {
       libraryClient.clear();
-      addBranch(null, name);
+      libraryClient.addBranch(name);
    }
 
    @Given("^a library system with one book$")
@@ -35,71 +32,46 @@ public class Stepdefs {
       libraryClient.clear();
       libraryClient.useLocalClassificationService();
       libraryClient.addBook(new Material("123", "", "", "123", ""));
-      addBranch(null, "branch");
-      addBookAtBranch("123", "branch");
+      libraryClient.addBranch("branchName");
+      libraryClient.addHolding("123", "123title", "branchName");
    }
-
-   class AddHolding {
-      public String title;
-      public String sourceId;
-   }
-
-   // TODO mess
-   Map<String,String> holdingBarcodes = new HashMap<>();
 
    @Given("^a branch named \"([^\"]*)\" with the following holdings:$")
    public void createBranchWithHoldings(String branchName, DataTable holdings) {
       addBranch(null, branchName);
+      class AddHolding {
+         public String title;
+         public String sourceId;
+      }
       holdings.asList(AddHolding.class).forEach(holding ->
-      // overload instead!
-         holdingBarcodes.put(
-            holding.title,
-            addH(holding, branchName)
-            )
-         );
-   }
-
-   String addH(AddHolding holding, String branchName) {
-      String bc = libraryClient.addHolding(holding.sourceId, branchScanCodes.get(branchName));
-      System.out.println("added holding " + bc);
-         return bc;
+         libraryClient.addHolding(holding.sourceId, holding.title, branchName));
    }
 
    @When("^(.*) adds? a branch named \"(.*)\"")
    public void addBranch(String user, String name) {
-      String scanCode = libraryClient.addBranch(name);
-      branchScanCodes.put(name, scanCode);
+      libraryClient.addBranch(name);
    }
 
    @When("^(.*) requests a list of all branches")
    public void requestBranches(String user) {
-      branches = libraryClient.retrieveBranches(user);
+      libraryClient.retrieveBranches(user);
    }
 
    @Then("^the system returns the following branches:?$")
    public void assertBranches(DataTable expectedBranches) {
-      expectedBranches.unorderedDiff(branches);
-   }
-
-   @Given("^a book with source id (\\d+) is added at branch \"([^\"]*)\"$")
-   public void addBookAtBranch(String sourceId, String branchName) {
-      holdingBarcode = libraryClient.addHolding(sourceId, branchScanCodes.get(branchName));
-      System.out.printf("Added holding %s at branch %s", holdingBarcode, branchScanCodes.get(branchName));
+      expectedBranches.unorderedDiff(libraryClient.retrievedBranches());
    }
 
    @Given("^a patron checks out (.*) on (\\d+)/(\\d+)/(\\d+)$")
    public void patronChecksOutHolding(String title, int year, int month, int dayOfMonth) {
       addPatron("");
-      String holdingBarcode = holdingBarcodes.get(title);
-      checkoutResponse = libraryClient.checkOutHolding(patronId, holdingBarcode, create(year, month, dayOfMonth));
+      checkoutResponse = libraryClient.checkOut(patronId, title, create(year, month, dayOfMonth));
    }
 
    @Then("^(.*) (is|is not) available")
    public void assertAvailable(String title, String isOrIsNot) {
-      String holdingBarcode = holdingBarcodes.get(title);
-      boolean expectedAvailable = isOrIsNot.equals("is");
-      HoldingResponse holding = libraryClient.retrieveHolding(holdingBarcode);
-      assertThat(holding.getIsAvailable(), is(expectedAvailable));
+      assertThat(libraryClient.retrieveHoldingWithTitle(title).getIsAvailable(),
+         is(isOrIsNot.equals("is")));
    }
 
    @Then("^the client is informed of a conflict")
@@ -109,22 +81,18 @@ public class Stepdefs {
 
    @Then("^the due date for (.*) is (\\d+)/(\\d+)/(\\d+)$")
    public void assertDueDate(String title, int year, int month, int dayOfMonth) {
-      HoldingResponse holding = libraryClient.retrieveHolding(holdingBarcodes.get(title));
-      assertThat(holding.getDateDue(), equalTo(create(year, month, dayOfMonth)));
+      assertThat(libraryClient.retrieveHoldingWithTitle(title).getDateDue(),
+         equalTo(create(year, month, dayOfMonth)));
    }
 
    @When("^(.*) is returned on (\\d+)/(\\d+)/(\\d+) to \"(.*)\"$")
    public void bookReturnedOnTo(String title, int year, int month, int dayOfMonth, String branchName) {
-      libraryClient.checkInHolding(holdingBarcodes.get(title), branchScanCodes.get(branchName), create(year, month, dayOfMonth));
+      libraryClient.checkIn(title, branchName, create(year, month, dayOfMonth));
    }
 
    @When("^(.*) is returned on (\\d+)/(\\d+)/(\\d+)$")
    public void bookReturnedOn(String title, int year, int month, int dayOfMonth) {
-      libraryClient.checkInHolding(holdingBarcodes.get(title), firstBranchScanCode(), create(year, month, dayOfMonth));
-   }
-
-   private String firstBranchScanCode() {
-      return branchScanCodes.values().iterator().next();
+      libraryClient.checkIn(title, create(year, month, dayOfMonth));
    }
 
    @Then("^the patron's fine balance is (\\d+)$")
@@ -140,12 +108,12 @@ public class Stepdefs {
 
    @When("^a librarian requests a list of all patrons$")
    public void requestPatrons() {
-      patrons = libraryClient.retrievePatrons();
+      retrievedPatrons = libraryClient.retrievePatrons();
    }
 
    @Then("^the client shows the following patrons:$")
    public void assertPatrons(DataTable expectedPatrons) {
-      expectedPatrons.unorderedDiff(patrons);
+      expectedPatrons.unorderedDiff(retrievedPatrons);
    }
 
    @Given("^a local classification service with:$")
@@ -156,13 +124,12 @@ public class Stepdefs {
 
    @When("^a librarian adds a book holding with source id (\\d+) at branch \"([^\"]*)\"$")
    public void addBookHolding(String sourceId, String branchName) {
-      libraryClient.addHolding(sourceId, branchScanCodes.get(branchName));
+      libraryClient.addHolding(sourceId, "???", branchName);
    }
 
    @Then("^the \"([^\"]*)\" branch contains the following holdings:$")
    public void assertBranchContains(String branchName, DataTable holdings) {
-      String branchScanCode = branchScanCodes.get(branchName);
-      List<HoldingResponse> retrievedHoldings = libraryClient.retrieveHoldingsAtBranch(branchScanCode);
+      List<HoldingResponse> retrievedHoldings = libraryClient.retrieveHoldingsAtBranch(branchName);
       holdings.unorderedDiff(retrievedHoldings);
    }
 }

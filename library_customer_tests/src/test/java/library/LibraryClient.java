@@ -8,6 +8,9 @@ import controller.*;
 
 public class LibraryClient {
    private RestTemplate template = RestTemplateFactory.create();
+   private Map<String,String> holdingBarcodes = new HashMap<>();
+   private Map<String,String> branchScanCodes = new HashMap<>();
+   private List<BranchRequest> retrievedBranches = new ArrayList<>();
 
    public static final String SERVER = "http://localhost:3003";
 
@@ -17,17 +20,29 @@ public class LibraryClient {
 
    // -- branches --
 
-   public String addBranch(String name) {
+   public List<BranchRequest> retrievedBranches() {
+      return retrievedBranches;
+   }
+
+   private String branchScanCode(String name) {
+      return branchScanCodes.get(name);
+   }
+
+   public void addBranch(String name) {
+      branchScanCodes.put(name, postBranch(name));
+   }
+
+   public String postBranch(String name) {
       BranchRequest request = new BranchRequest();
       request.setName(name);
       ResponseEntity<String> response = template.postForEntity(url("/branches"), request, String.class);
       return response.getBody();
    }
 
-   public List<BranchRequest> retrieveBranches(String user) {
+   public void retrieveBranches(String user) {
       ResponseEntity<BranchRequest[]> response = template.getForEntity(url("/branches"),
          BranchRequest[].class);
-      return asList(response.getBody());
+      retrievedBranches = asList(response.getBody());
    }
 
    // -- patrons --
@@ -67,7 +82,13 @@ public class LibraryClient {
 
    // -- holdings --
 
-   public String addHolding(String sourceId, String branchScanCode) {
+
+   // TODO remove return value
+   public String addHolding(String sourceId, String title, String branchName) {
+      return holdingBarcodes.put(title, postHolding(sourceId, branchScanCode(branchName)));
+   }
+
+   public String postHolding(String sourceId, String branchScanCode) {
       AddHoldingRequest request = new AddHoldingRequest();
       request.setBranchScanCode(branchScanCode);
       request.setSourceId(sourceId);
@@ -75,7 +96,11 @@ public class LibraryClient {
       return response.getBody();
    }
 
-   public int checkOutHolding(String patronId, String barcode, Date date) {
+   public int checkOut(String patronId, String title, Date date) {
+      return postCheckOut(patronId, holdingBarcode(title), date);
+   }
+
+   public int postCheckOut(String patronId, String barcode, Date date) {
       CheckoutRequest request = new CheckoutRequest();
       request.setPatronId(patronId);
       request.setHoldingBarcode(barcode);
@@ -88,13 +113,26 @@ public class LibraryClient {
       }
    }
 
-   public HoldingResponse retrieveHolding(String holdingBarcode) {
+   public HoldingResponse retrieveHoldingWithTitle(String title) {
+      return getHolding(holdingBarcode(title));
+   }
+
+   public HoldingResponse getHolding(String holdingBarcode) {
       ResponseEntity<HoldingResponse> response = template.getForEntity(url("/holdings/" + holdingBarcode),
          HoldingResponse.class);
       return response.getBody();
    }
 
-   public void checkInHolding(String holdingBarcode, String branchScanCode, Date date) {
+   public void checkIn(String title, String branchName, Date date) {
+      postCheckIn(holdingBarcode(title), branchScanCode(branchName), date);
+   }
+
+   public void checkIn(String title, Date date) {
+      String firstBranchName = branchScanCodes.keySet().iterator().next();
+      postCheckIn(holdingBarcode(title), branchScanCode(firstBranchName), date);
+   }
+
+   public void postCheckIn(String holdingBarcode, String branchScanCode, Date date) {
       CheckinRequest request = new CheckinRequest();
       request.setHoldingBarcode(holdingBarcode);
       request.setBranchScanCode(branchScanCode);
@@ -102,12 +140,17 @@ public class LibraryClient {
       template.postForEntity(url("/holdings/checkin"), request, String.class);
    }
 
-   public List<HoldingResponse> retrieveHoldingsAtBranch(String branchScanCode) {
-      ResponseEntity<HoldingResponse[]> response = template.getForEntity(url("/holdings?branchScanCode=" + branchScanCode), HoldingResponse[].class);
+   public List<HoldingResponse> retrieveHoldingsAtBranch(String branchName) {
+      ResponseEntity<HoldingResponse[]> response = template.getForEntity(url("/holdings?branchScanCode=" + branchScanCode(branchName)), HoldingResponse[].class);
       return asList(response.getBody());
    }
 
    public void addBooks(List<Material> books) {
       books.stream().forEach(book -> addBook(book));
    }
+
+   private String holdingBarcode(String title) {
+      return holdingBarcodes.get(title);
+   }
+
 }
