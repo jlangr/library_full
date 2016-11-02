@@ -93,9 +93,8 @@ public class LibraryClient {
    // -- holdings --
 
 
-   // TODO remove return value
-   public String addHolding(String sourceId, String title, String branchName) {
-      return holdingBarcodes.put(title, postHolding(sourceId, branchScanCode(branchName)));
+   public void addHolding(String sourceId, String title, String branchName) {
+      holdingBarcodes.put(title, postHolding(sourceId, branchScanCode(branchName)));
    }
 
    public String postHolding(String sourceId, String branchScanCode) {
