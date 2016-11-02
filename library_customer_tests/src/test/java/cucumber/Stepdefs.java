@@ -2,6 +2,8 @@ package cucumber;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static util.DateUtil.create;
+import java.util.List;
+import java.util.stream.Collectors;
 import com.loc.material.api.Material;
 import cucumber.api.DataTable;
 import cucumber.api.java.en.*;
@@ -23,24 +25,27 @@ public class Stepdefs {
       libraryClient.addBranch(name);
    }
 
-   @Given("^a library system with one book$")
-   public void addOneBookAtNewLibrary() {
-      libraryClient.clear();
-      libraryClient.useLocalClassificationService();
-      libraryClient.addBook(new Material("123", "", "", "123", ""));
-      libraryClient.addBranch("branchName");
-      libraryClient.addHolding("123", "123title", "branchName");
+   private Material createBook(String title) {
+      Material material = new Material();
+      material.setTitle(title);
+      material.setSourceId(title);
+      material.setType("Book");
+      material.setClassification(title);
+      return material;
    }
 
    @Given("^a branch named \"([^\"]*)\" with the following holdings:$")
-   public void createBranchWithHoldings(String branchName, DataTable holdings) {
+   public void createBranchWithHoldings(String branchName, List<String> titles) {
       libraryClient.addBranch(branchName);
-      class AddHolding {
-         public String title;
-         public String sourceId;
-      }
-      holdings.asList(AddHolding.class).forEach(holding ->
-         libraryClient.addHolding(holding.sourceId, holding.title, branchName));
+      libraryClient.useLocalClassificationService();
+
+      List<Material> books = titles.stream()
+         .map(title -> createBook(title))
+         .collect(Collectors.toList());
+      libraryClient.addBooks(books);
+
+      books.forEach(book ->
+         libraryClient.addHolding(book.getSourceId(), book.getTitle(), branchName));
    }
 
    @When("^(.*) adds? a branch named \"(.*)\"")

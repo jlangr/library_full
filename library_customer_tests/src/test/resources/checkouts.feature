@@ -1,18 +1,12 @@
 Feature: checkouts and checkins
-   As a patron, 
-   I want to ...
-   ? phrasing on voice 1st person
+   As a library, 
+   I want to manage patrons borrowing holdings from the library
 
 Background:
    Given a clean library system
-   And a local classification service with:
-      | source id | classification | format |
-      | 123 | QA-8675309 | Book |
-      | 999 | EF-3303 | Book |
    And a branch named "Rockrimmon" with the following holdings:
-   | source id | title |
-   | 123 | Catch-22 |
-   | 999 | 1984 |
+   | Catch-22 |
+   | 1984 |
 
 Scenario: Errors when attempting to check out book twice
    Given a patron checks out Catch-22 on 2017/3/1

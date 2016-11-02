@@ -78,6 +78,10 @@ public class Material {
       this.type = type;
    }
 
+   public String getType() {
+      return type;
+   }
+
    public void setYear(String year) {
       this.year = year;
    }
