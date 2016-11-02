@@ -2,9 +2,7 @@ package cucumber;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static util.DateUtil.create;
-import java.util.*;
-import com.loc.material.api.*;
-import controller.*;
+import com.loc.material.api.Material;
 import cucumber.api.DataTable;
 import cucumber.api.java.en.*;
 import library.LibraryClient;
@@ -12,8 +10,6 @@ import library.LibraryClient;
 // TODO use PicoContainer and injection between stepdefs?
 public class Stepdefs {
    private LibraryClient libraryClient = new LibraryClient();
-   private List<PatronRequest> retrievedPatrons;
-   private String patronId;
    private int checkoutResponse;
 
    @Given("^a clean library system$")
@@ -38,7 +34,7 @@ public class Stepdefs {
 
    @Given("^a branch named \"([^\"]*)\" with the following holdings:$")
    public void createBranchWithHoldings(String branchName, DataTable holdings) {
-      addBranch(null, branchName);
+      libraryClient.addBranch(branchName);
       class AddHolding {
          public String title;
          public String sourceId;
@@ -64,8 +60,8 @@ public class Stepdefs {
 
    @Given("^a patron checks out (.*) on (\\d+)/(\\d+)/(\\d+)$")
    public void patronChecksOutHolding(String title, int year, int month, int dayOfMonth) {
-      addPatron("");
-      checkoutResponse = libraryClient.checkOut(patronId, title, create(year, month, dayOfMonth));
+      libraryClient.addPatron("");
+      checkoutResponse = libraryClient.checkOut(title, create(year, month, dayOfMonth));
    }
 
    @Then("^(.*) (is|is not) available")
@@ -97,23 +93,22 @@ public class Stepdefs {
 
    @Then("^the patron's fine balance is (\\d+)$")
    public void assertFineBalance(int expectedFineBalance) {
-      PatronRequest patron = libraryClient.retrievePatron(patronId);
-      assertThat(expectedFineBalance, equalTo(patron.getFineBalance()));
+      assertThat(expectedFineBalance, equalTo(libraryClient.currentPatron().getFineBalance()));
    }
 
    @Given("^a librarian adds a patron named (.*)$")
    public void addPatron(String name) {
-      patronId = libraryClient.addPatron(name);
+      libraryClient.addPatron(name);
    }
 
    @When("^a librarian requests a list of all patrons$")
    public void requestPatrons() {
-      retrievedPatrons = libraryClient.retrievePatrons();
+      libraryClient.retrievePatrons();
    }
 
    @Then("^the client shows the following patrons:$")
    public void assertPatrons(DataTable expectedPatrons) {
-      expectedPatrons.unorderedDiff(retrievedPatrons);
+      expectedPatrons.unorderedDiff(libraryClient.retrievedPatrons());
    }
 
    @Given("^a local classification service with:$")
@@ -129,7 +124,6 @@ public class Stepdefs {
 
    @Then("^the \"([^\"]*)\" branch contains the following holdings:$")
    public void assertBranchContains(String branchName, DataTable holdings) {
-      List<HoldingResponse> retrievedHoldings = libraryClient.retrieveHoldingsAtBranch(branchName);
-      holdings.unorderedDiff(retrievedHoldings);
+      holdings.unorderedDiff(libraryClient.retrieveHoldingsAtBranch(branchName));
    }
 }

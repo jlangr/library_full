@@ -11,6 +11,8 @@ public class LibraryClient {
    private Map<String,String> holdingBarcodes = new HashMap<>();
    private Map<String,String> branchScanCodes = new HashMap<>();
    private List<BranchRequest> retrievedBranches = new ArrayList<>();
+   private List<PatronRequest> retrievedPatrons = new ArrayList<>();
+   private String patronId;
 
    public static final String SERVER = "http://localhost:3003";
 
@@ -47,18 +49,26 @@ public class LibraryClient {
 
    // -- patrons --
 
-   public String addPatron(String name) {
+   public void addPatron(String name) {
       PatronRequest request = new PatronRequest();
       // careful--something can't handle an overloaded single-arg ctor
       request.setName(name);
       ResponseEntity<String> response = template.postForEntity(url("/patrons"), request, String.class);
-      return response.getBody();
+      patronId = response.getBody();
    }
 
-   public List<PatronRequest> retrievePatrons() {
+   public List<PatronRequest> retrievedPatrons() {
+      return retrievedPatrons;
+   }
+
+   public void retrievePatrons() {
       ResponseEntity<PatronRequest[]> response = template.getForEntity(url("/patrons"),
          PatronRequest[].class);
-      return asList(response.getBody());
+      retrievedPatrons = asList(response.getBody());
+   }
+
+   public PatronRequest currentPatron() {
+      return retrievePatron(patronId);
    }
 
    public PatronRequest retrievePatron(String patronId) {
@@ -96,7 +106,7 @@ public class LibraryClient {
       return response.getBody();
    }
 
-   public int checkOut(String patronId, String title, Date date) {
+   public int checkOut(String title, Date date) {
       return postCheckOut(patronId, holdingBarcode(title), date);
    }
 
