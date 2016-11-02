@@ -1,15 +1,15 @@
 package library;
+
 import static java.util.Arrays.asList;
 import java.util.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.*;
-import com.loc.material.api.Material;
 import controller.*;
 
 public class LibraryClient {
    private RestTemplate template = RestTemplateFactory.create();
-   private Map<String,String> holdingBarcodes = new HashMap<>();
-   private Map<String,String> branchScanCodes = new HashMap<>();
+   private Map<String, String> holdingBarcodes = new HashMap<>();
+   private Map<String, String> branchScanCodes = new HashMap<>();
    private List<BranchRequest> retrievedBranches = new ArrayList<>();
    private List<PatronRequest> retrievedPatrons = new ArrayList<>();
    private String patronId;
@@ -72,9 +72,7 @@ public class LibraryClient {
    }
 
    public PatronRequest retrievePatron(String patronId) {
-      ResponseEntity<PatronRequest> response = template.getForEntity(url("/patrons/" + patronId),
-         PatronRequest.class);
-      return response.getBody();
+      return template.getForEntity(url("/patrons/" + patronId), PatronRequest.class).getBody();
    }
 
    // -- library back door --
@@ -86,12 +84,22 @@ public class LibraryClient {
       template.postForEntity(url("/use_local_classification"), null, null);
    }
 
-   public void addBook(Material book) {
+   public void addBooks(List<MaterialRequest> books) {
+      books.stream().forEach(book -> addBook(book));
+   }
+
+   public void addBook(MaterialRequest book) {
       template.postForEntity(url("/materials"), book, null);
    }
 
    // -- holdings --
 
+   public void addHoldingsWithTitles(List<String> titles, String branchName) {
+      titles.stream().map(title -> createBook(title)).forEach(book -> {
+         addBook(book);
+         addHolding(book.getSourceId(), book.getTitle(), branchName);
+      });
+   }
 
    public void addHolding(String sourceId, String title, String branchName) {
       holdingBarcodes.put(title, postHolding(sourceId, branchScanCode(branchName)));
@@ -101,8 +109,7 @@ public class LibraryClient {
       AddHoldingRequest request = new AddHoldingRequest();
       request.setBranchScanCode(branchScanCode);
       request.setSourceId(sourceId);
-      ResponseEntity<String> response = template.postForEntity(url("/holdings"), request, String.class);
-      return response.getBody();
+      return template.postForEntity(url("/holdings"), request, String.class).getBody();
    }
 
    public int checkOut(String title, Date date) {
@@ -115,8 +122,7 @@ public class LibraryClient {
       request.setHoldingBarcode(barcode);
       request.setCheckoutDate(date);
       try {
-         return template.postForEntity(url("/holdings/checkout"), request, String.class)
-            .getStatusCodeValue();
+         return template.postForEntity(url("/holdings/checkout"), request, String.class).getStatusCodeValue();
       } catch (HttpStatusCodeException exception) {
          return exception.getRawStatusCode();
       }
@@ -127,9 +133,7 @@ public class LibraryClient {
    }
 
    public HoldingResponse getHolding(String holdingBarcode) {
-      ResponseEntity<HoldingResponse> response = template.getForEntity(url("/holdings/" + holdingBarcode),
-         HoldingResponse.class);
-      return response.getBody();
+      return template.getForEntity(url("/holdings/" + holdingBarcode), HoldingResponse.class).getBody();
    }
 
    public void checkIn(String title, String branchName, Date date) {
@@ -150,16 +154,21 @@ public class LibraryClient {
    }
 
    public List<HoldingResponse> retrieveHoldingsAtBranch(String branchName) {
-      ResponseEntity<HoldingResponse[]> response = template.getForEntity(url("/holdings?branchScanCode=" + branchScanCode(branchName)), HoldingResponse[].class);
+      ResponseEntity<HoldingResponse[]> response = template.getForEntity(
+         url("/holdings?branchScanCode=" + branchScanCode(branchName)), HoldingResponse[].class);
       return asList(response.getBody());
-   }
-
-   public void addBooks(List<Material> books) {
-      books.stream().forEach(book -> addBook(book));
    }
 
    private String holdingBarcode(String title) {
       return holdingBarcodes.get(title);
    }
 
+   private MaterialRequest createBook(String title) {
+      MaterialRequest material = new MaterialRequest();
+      material.setTitle(title);
+      material.setSourceId(title);
+      material.setFormat("Book");
+      material.setClassification(title);
+      return material;
+   }
 }

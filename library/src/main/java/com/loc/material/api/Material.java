@@ -7,7 +7,6 @@ public class Material {
    private String year;
    private MaterialType format;
    private String classification;
-   private String type;
 
    public Material() {
    }
@@ -64,22 +63,11 @@ public class Material {
    }
 
    public MaterialType getFormat() {
-      if (format == null)
-         format = MaterialType.valueOf(type);
       return format;
    }
 
    public void setFormat(MaterialType format) {
       this.format = format;
-   }
-
-   // TODO [x] ugly way to do this. Create new separate type for DTO?
-   public void setType(String type) {
-      this.type = type;
-   }
-
-   public String getType() {
-      return type;
    }
 
    public void setYear(String year) {

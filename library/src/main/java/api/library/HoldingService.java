@@ -19,7 +19,7 @@ public class HoldingService {
       Material material =
             ClassificationApiFactory.getService().retrieveMaterial(sourceId);
       if (material == null)
-         throw new InvalidSourceIdException();
+         throw new InvalidSourceIdException("cannot retrieve material with source ID " + sourceId);
       return material;
    }
 
