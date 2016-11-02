@@ -7,8 +7,10 @@ import static util.MapUtil.createMap;
 import java.util.*;
 import static java.util.Arrays.asList;
 import org.junit.*;
+import org.junit.experimental.categories.Category;
 import org.mockito.*;
 import org.springframework.web.client.RestTemplate;
+import testutil.Slow;
 
 public class ClassificationServiceTest {
    private static final String THE_ROAD_AUTHOR = "Cormac McCarthy";
@@ -41,6 +43,7 @@ public class ClassificationServiceTest {
       assertMaterialDetailsForTheRoad(material);
    }
 
+   @Category(Slow.class)
    @Test
    // TODO Integration. Use JUnit categories to run?
    public void liveRetrieve() {

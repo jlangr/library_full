@@ -9,7 +9,7 @@ import cucumber.api.DataTable;
 import cucumber.api.java.en.*;
 import library.LibraryClient;
 
-// TODO use PicoContainer and injection between stepdefs?
+// TODO [x] use PicoContainer and injection between stepdefs?
 public class Stepdefs {
    private LibraryClient libraryClient = new LibraryClient();
    private int checkoutResponse;
