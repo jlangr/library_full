@@ -1,4 +1,5 @@
 package cucumber;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static util.DateUtil.create;
@@ -46,16 +47,15 @@ public class Stepdefs {
       expectedBranches.unorderedDiff(libraryClient.retrievedBranches());
    }
 
-   @Given("^a patron checks out (.*) on (\\d+)/(\\d+)/(\\d+)$")
+   @Given("^a patron checks out \"(.*)\" on (\\d+)/(\\d+)/(\\d+)$")
    public void patronChecksOutHolding(String title, int year, int month, int dayOfMonth) {
       libraryClient.addPatron("");
       checkoutResponse = libraryClient.checkOut(title, create(year, month, dayOfMonth));
    }
 
-   @Then("^(.*) (is|is not) available")
+   @Then("^\"(.*)\" (is|is not) available")
    public void assertAvailable(String title, String isOrIsNot) {
-      assertThat(libraryClient.retrieveHoldingWithTitle(title).getIsAvailable(),
-         is(isOrIsNot.equals("is")));
+      assertThat(libraryClient.retrieveHoldingWithTitle(title).getIsAvailable(), is(isOrIsNot.equals("is")));
    }
 
    @Then("^the client is informed of a conflict")
@@ -63,18 +63,18 @@ public class Stepdefs {
       assertThat(checkoutResponse, equalTo(409));
    }
 
-   @Then("^the due date for (.*) is (\\d+)/(\\d+)/(\\d+)$")
+   @Then("^the due date for \"(.*)\" is (\\d+)/(\\d+)/(\\d+)$")
    public void assertDueDate(String title, int year, int month, int dayOfMonth) {
       assertThat(libraryClient.retrieveHoldingWithTitle(title).getDateDue(),
          equalTo(create(year, month, dayOfMonth)));
    }
 
-   @When("^(.*) is returned on (\\d+)/(\\d+)/(\\d+) to \"(.*)\"$")
+   @When("^\"(.*)\" is returned on (\\d+)/(\\d+)/(\\d+) to \"(.*)\"$")
    public void bookReturnedOnTo(String title, int year, int month, int dayOfMonth, String branchName) {
       libraryClient.checkIn(title, branchName, create(year, month, dayOfMonth));
    }
 
-   @When("^(.*) is returned on (\\d+)/(\\d+)/(\\d+)$")
+   @When("^\"(.*)\" is returned on (\\d+)/(\\d+)/(\\d+)$")
    public void bookReturnedOn(String title, int year, int month, int dayOfMonth) {
       libraryClient.checkIn(title, create(year, month, dayOfMonth));
    }
