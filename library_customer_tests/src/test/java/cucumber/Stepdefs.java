@@ -25,7 +25,7 @@ public class Stepdefs {
       libraryClient.addBranch(name);
    }
 
-   @Given("^a branch named \"([^\"]*)\" with the following holdings:$")
+   @Given("^a branch named \"([^\"]*)\" with the following holdings: (.*)$")
    public void createBranchWithHoldings(String branchName, List<String> titles) {
       libraryClient.addBranch(branchName);
       libraryClient.useLocalClassificationService();

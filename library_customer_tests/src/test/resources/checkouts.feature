@@ -4,9 +4,7 @@ Feature: checkouts and checkins
 
 Background:
    Given a clean library system
-   And a branch named "Rockrimmon" with the following holdings:
-   | Catch-22 |
-   | 1984 |
+   And a branch named "Rockrimmon" with the following holdings: Catch-22, 1984
 
 Scenario: Errors when attempting to check out book twice
    Given a patron checks out "Catch-22" on 2017/3/1
@@ -17,6 +15,7 @@ Scenario: Checked out book is not available
    When a patron checks out "1984" on 2017/5/31 
    Then "1984" is not available
    
+ # TODO
 Scenario: Checked out book added to patron
 
 Scenario: Book is available after checkin

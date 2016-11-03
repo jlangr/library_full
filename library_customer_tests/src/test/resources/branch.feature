@@ -11,3 +11,6 @@ Scenario: Add a branch
       | name |
       | East |
       | West |
+      
+ # TODO
+ Scenario: Attempt to add branch with duplicate name

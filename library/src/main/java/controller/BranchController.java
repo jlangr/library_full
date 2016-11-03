@@ -12,7 +12,6 @@ public class BranchController {
 
    @PostMapping
    public String add(@RequestBody BranchRequest branchRequest) {
-      // TODO [x] on duplicate/error
        return service.add(branchRequest.getName());
    }
 
