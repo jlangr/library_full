@@ -1,6 +1,6 @@
 Feature: checkouts and checkins
-   As a library, 
-   I want to manage patrons borrowing holdings from the library
+   The library allows patrons to check out limited materials, which
+   requires managing their availability.
 
 Background:
    Given a clean library system
@@ -15,7 +15,7 @@ Scenario: Checked out book is not available
    When a patron checks out "1984" on 2017/5/31 
    Then "1984" is not available
    
- # TODO
+@ignore
 Scenario: Checked out book added to patron
 
 Scenario: Book is available after checkin
