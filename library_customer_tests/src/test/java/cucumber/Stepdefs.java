@@ -2,15 +2,15 @@ package cucumber;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
-import static util.DateUtil.create;
-import java.util.List;
+import java.util.*;
 import controller.MaterialRequest;
-import cucumber.api.DataTable;
+import cucumber.api.*;
 import cucumber.api.java.en.*;
 import library.LibraryClient;
 
 // TODO [x] use PicoContainer and injection between stepdefs?
 public class Stepdefs {
+   public static final String YMD = "yyyy/MM/dd";
    private LibraryClient libraryClient = new LibraryClient();
    private int checkoutResponse;
 
@@ -47,10 +47,10 @@ public class Stepdefs {
       expectedBranches.unorderedDiff(libraryClient.retrievedBranches());
    }
 
-   @Given("^a patron checks out \"(.*)\" on (\\d+)/(\\d+)/(\\d+)$")
-   public void patronChecksOutHolding(String title, int year, int month, int dayOfMonth) {
-      libraryClient.addPatron("");
-      checkoutResponse = libraryClient.checkOut(title, create(year, month, dayOfMonth));
+   @Given("^a patron checks out \"(.*)\" on (\\d+/\\d+/\\d+)$")
+   public void patronChecksOutHolding(String title, @Format(YMD) Date checkoutDate) {
+      libraryClient.addPatron("", null);
+      checkoutResponse = libraryClient.checkOut(title, checkoutDate);
    }
 
    @Then("^\"(.*)\" (is|is not) available")
@@ -63,30 +63,30 @@ public class Stepdefs {
       assertThat(checkoutResponse, equalTo(409));
    }
 
-   @Then("^the due date for \"(.*)\" is (\\d+)/(\\d+)/(\\d+)$")
-   public void assertDueDate(String title, int year, int month, int dayOfMonth) {
+   @Then("^the due date for \"(.*)\" is (\\d+/\\d+/\\d+)$")
+   public void assertDueDate(String title, @Format(YMD) Date dueDate) {
       assertThat(libraryClient.retrieveHoldingWithTitle(title).getDateDue(),
-         equalTo(create(year, month, dayOfMonth)));
+         equalTo(dueDate));
    }
 
-   @When("^\"(.*)\" is returned on (\\d+)/(\\d+)/(\\d+) to \"(.*)\"$")
-   public void bookReturnedOnTo(String title, int year, int month, int dayOfMonth, String branchName) {
-      libraryClient.checkIn(title, branchName, create(year, month, dayOfMonth));
+   @When("^\"(.*)\" is returned on (\\d+/\\d+/\\d+) to \"(.*)\"$")
+   public void bookReturnedOnTo(String title, @Format(YMD) Date checkinDate, String branchName) {
+      libraryClient.checkIn(title, branchName, checkinDate);
    }
 
-   @When("^\"(.*)\" is returned on (\\d+)/(\\d+)/(\\d+)$")
-   public void bookReturnedOn(String title, int year, int month, int dayOfMonth) {
-      libraryClient.checkIn(title, create(year, month, dayOfMonth));
+   @When("^\"(.*)\" is returned on (\\d+/\\d+/\\d+)$")
+   public void bookReturnedOn(String title, @Format(YMD) Date checkinDate) {
+      libraryClient.checkIn(title, checkinDate);
    }
 
    @Then("^the patron's fine balance is (\\d+)$")
    public void assertFineBalance(int expectedFineBalance) {
-      assertThat(expectedFineBalance, equalTo(libraryClient.currentPatron().getFineBalance()));
+      assertThat(libraryClient.currentPatron().getFineBalance(), equalTo(expectedFineBalance));
    }
 
-   @Given("^a librarian adds a patron named (.*)$")
-   public void addPatron(String name) {
-      libraryClient.addPatron(name);
+   @Given("^a librarian adds a patron named (.*) with a birthdate of (\\d+/\\d+/\\d+)$")
+   public void addPatron(String name, @Format(YMD) Date birthDate) {
+      libraryClient.addPatron(name, birthDate);
    }
 
    @When("^a librarian requests a list of all patrons$")
@@ -95,7 +95,7 @@ public class Stepdefs {
    }
 
    @Then("^the client shows the following patrons:$")
-   public void assertPatrons(DataTable expectedPatrons) {
+   public void assertPatrons(@Format(YMD) DataTable expectedPatrons) {
       expectedPatrons.unorderedDiff(libraryClient.retrievedPatrons());
    }
 
@@ -111,7 +111,7 @@ public class Stepdefs {
    }
 
    @Then("^the \"([^\"]*)\" branch contains the following holdings:$")
-   public void assertBranchContains(String branchName, DataTable holdings) {
+   public void assertBranchContains(String branchName, @Format("yyyy/M/d") DataTable holdings) {
       holdings.unorderedDiff(libraryClient.retrieveHoldingsAtBranch(branchName));
    }
 }

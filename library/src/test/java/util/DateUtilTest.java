@@ -3,50 +3,55 @@ package util;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import java.util.Calendar;
+import static java.util.Calendar.*;
 import java.util.Date;
 import org.junit.Test;
+import static util.DateUtil.*;
 
 public class DateUtilTest {
-   public static final Date NEW_YEARS_DAY = DateUtil.create(2011, Calendar.JANUARY, 1);
-   public static final Date GROUNDHOG_DAY = DateUtil.create(2011, Calendar.FEBRUARY, 2);
+   public static final Date NEW_YEARS_DAY = create(2011, JANUARY, 1);
+   public static final Date GROUNDHOG_DAY = create(2011, FEBRUARY, 2);
 
    @Test
    public void createGeneratedProperDateElements() {
       Calendar calendar = Calendar.getInstance();
+
       calendar.setTime(NEW_YEARS_DAY);
-      assertThat(calendar.get(Calendar.YEAR), equalTo(2011));
-      assertThat(calendar.get(Calendar.MONTH), equalTo(Calendar.JANUARY));
-      assertThat(calendar.get(Calendar.DAY_OF_MONTH), equalTo(1));
-      assertThat(calendar.get(Calendar.HOUR_OF_DAY), equalTo(0));
-      assertThat(calendar.get(Calendar.MINUTE), equalTo(0));
-      assertThat(calendar.get(Calendar.SECOND), equalTo(0));
-      assertThat(calendar.get(Calendar.MILLISECOND), equalTo(0));
+
+      assertThat(calendar.get(YEAR), equalTo(2011));
+      assertThat(calendar.get(MONTH), equalTo(JANUARY));
+      assertThat(calendar.get(DAY_OF_MONTH), equalTo(1));
+      assertThat(calendar.get(HOUR_OF_DAY), equalTo(0));
+      assertThat(calendar.get(MINUTE), equalTo(0));
+      assertThat(calendar.get(SECOND), equalTo(0));
+      assertThat(calendar.get(MILLISECOND), equalTo(0));
    }
 
    @Test
-   public void addDays() {
-      assertThat(DateUtil.addDays(NEW_YEARS_DAY, 1), equalTo(DateUtil.create(2011, Calendar.JANUARY, 2)));
-      assertThat(DateUtil.addDays(NEW_YEARS_DAY, 367), equalTo(DateUtil.create(2012, Calendar.JANUARY, 3)));
+   public void addDaysAnswersLaterDate() {
+      assertThat(addDays(create(2017, MARCH, 1), 21), equalTo(create(2017, MARCH, 22)));
+      assertThat(addDays(NEW_YEARS_DAY, 367), equalTo(create(2012, JANUARY, 3)));
+      assertThat(addDays(create(2017, DECEMBER, 31), 32), equalTo(create(2018, FEBRUARY, 1)));
    }
 
    @Test
    public void answersDaysFromWithinSameYear() {
-      Date laterBy15 = DateUtil.addDays(NEW_YEARS_DAY, 15);
+      Date laterBy15 = addDays(NEW_YEARS_DAY, 15);
 
-      assertThat(DateUtil.daysFrom(NEW_YEARS_DAY, laterBy15), equalTo(15));
+      assertThat(daysFrom(NEW_YEARS_DAY, laterBy15), equalTo(15));
    }
 
    @Test
    public void answersDaysFromToNextYear() {
-      Date laterBy375 = DateUtil.addDays(NEW_YEARS_DAY, 375);
+      Date laterBy375 = addDays(NEW_YEARS_DAY, 375);
 
-      assertThat(DateUtil.daysFrom(NEW_YEARS_DAY, laterBy375), equalTo(375));
+      assertThat(daysFrom(NEW_YEARS_DAY, laterBy375), equalTo(375));
    }
 
    @Test
    public void answersDaysFromManyYearsOut() {
-      Date later = DateUtil.addDays(NEW_YEARS_DAY, 2100);
+      Date later = addDays(NEW_YEARS_DAY, 2100);
 
-      assertThat(DateUtil.daysFrom(NEW_YEARS_DAY, later), equalTo(2100));
+      assertThat(daysFrom(NEW_YEARS_DAY, later), equalTo(2100));
    }
 }

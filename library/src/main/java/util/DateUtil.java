@@ -6,7 +6,6 @@ import java.util.GregorianCalendar;
 import static java.util.Calendar.*;
 
 public class DateUtil {
-   private static final long MS_IN_DAY = 1000L * 60 * 60 * 24;
    private static Calendar calendar = GregorianCalendar.getInstance();
    private static Calendar calendar2 = GregorianCalendar.getInstance();
 
@@ -17,7 +16,9 @@ public class DateUtil {
    }
 
    public static Date addDays(Date date, int days) {
-      return new Date(date.getTime() + days * MS_IN_DAY);
+      calendar.setTime(date);
+      calendar.add(Calendar.DAY_OF_YEAR, days);
+      return calendar.getTime();
    }
 
    public static Date tomorrow() {

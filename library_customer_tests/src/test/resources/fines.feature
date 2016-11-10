@@ -17,16 +17,17 @@ Scenario: Book incurs no fine when returned on due date
    Then the patron's fine balance is 0
    
 # NB: Outline must be uppercase!
+@only
 Scenario Outline: Book incurs fine when returned after due date
    Given a patron checks out "The Trial" on <checkoutDate>
    When "The Trial" is returned on <checkinDate>
    Then the patron's fine balance is <expectedBalance>
 
    Examples:
-   | checkoutDate | checkinDate | expectedBalance |
-   | 2017/5/1      | 2017/5/23   | 10 |
-   | 2017/5/1      | 2017/5/24   | 20 |
-   | 2017/5/1      | 2017/5/25   | 30 |
+   | checkoutDate    | checkinDate  | expectedBalance |
+   | 2017/05/01      | 2017/05/23   | 10 |
+   | 2017/05/01      | 2017/05/24   | 20 |
+   | 2017/05/01      | 2017/05/25   | 30 |
 
 Scenario: Late book fine balance is multiple of days
    Given a patron checks out "Catch-22" on 2017/5/1
