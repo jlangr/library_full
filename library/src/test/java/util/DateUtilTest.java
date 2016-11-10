@@ -1,12 +1,12 @@
 package util;
 
+import static java.util.Calendar.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import java.util.Calendar;
-import static java.util.Calendar.*;
-import java.util.Date;
-import org.junit.Test;
 import static util.DateUtil.*;
+import java.time.*;
+import java.util.*;
+import org.junit.Test;
 
 public class DateUtilTest {
    public static final Date NEW_YEARS_DAY = create(2011, JANUARY, 1);
@@ -53,5 +53,39 @@ public class DateUtilTest {
       Date later = addDays(NEW_YEARS_DAY, 2100);
 
       assertThat(daysFrom(NEW_YEARS_DAY, later), equalTo(2100));
+   }
+
+   @Test
+   public void convertsJavaUtilDateToLocalDate() {
+      LocalDate converted = toLocalDate(create(2016, MAY, 15));
+
+      assertThat(converted.getDayOfMonth(), equalTo(15));
+      assertThat(converted.getYear(), equalTo(2016));
+      assertThat(converted.getMonth(), equalTo(Month.MAY));
+   }
+
+   @Test
+   public void getCurrentDateReturnsInjectedValue() {
+      fixClockAt(NEW_YEARS_DAY);
+
+      Date date = getCurrentDate();
+
+      assertThat(date, equalTo(NEW_YEARS_DAY));
+   }
+
+   @Test
+   public void getCurrentLocalDateReturnsInjectedValue() {
+      fixClockAt(NEW_YEARS_DAY);
+
+      LocalDate date = getCurrentLocalDate();
+
+      assertThat(date, equalTo(toLocalDate(NEW_YEARS_DAY)));
+   }
+
+   @Test
+   public void ageInYearsDeterminesYearsBetweenTwoLocalDates() {
+      int age = ageInYears(LocalDate.of(2010, Month.MAY, 1), LocalDate.of(2015, Month.MAY, 2));
+
+      assertThat(age, equalTo(5));
    }
 }
