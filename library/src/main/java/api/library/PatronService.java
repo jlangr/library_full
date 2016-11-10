@@ -1,8 +1,7 @@
 package api.library;
 
-import java.util.Collection;
-
 import persistence.PatronStore;
+import java.util.*;
 import domain.core.Patron;
 
 public class PatronService {
@@ -12,9 +11,16 @@ public class PatronService {
       return save(new Patron(name));
    }
 
+   public String add(String name, Date birthDate) {
+      Patron patron = new Patron(name);
+      patron.setBirthDate(birthDate);
+      return save(patron);
+   }
+
    public String add(String id, String name) {
       if (!id.startsWith("p")) throw new InvalidPatronIdException();
-      return save(new Patron(id, name));
+      Patron patron = new Patron(id, name);
+      return save(patron);
    }
 
    private String save(Patron newPatron) {

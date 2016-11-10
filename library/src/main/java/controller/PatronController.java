@@ -12,7 +12,7 @@ public class PatronController {
 
    @PostMapping
    public String add(@RequestBody PatronRequest patronRequest) {
-      return service.add(patronRequest.getName());
+      return service.add(patronRequest.getName(), patronRequest.getBirthDate());
    }
 
    @GetMapping

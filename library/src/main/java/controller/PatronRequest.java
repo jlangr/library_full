@@ -1,11 +1,13 @@
 package controller;
 
+import java.util.Date;
 import domain.core.Patron;
 
 public class PatronRequest {
    private String name;
    private String id;
    private int fineBalance;
+   private Date birthDate;
 
    public PatronRequest() {
    }
@@ -13,25 +15,19 @@ public class PatronRequest {
    public PatronRequest(Patron patron) {
       this.id = patron.getId();
       this.name = patron.getName();
+      this.birthDate = patron.getBirthDate();
       this.fineBalance = patron.fineBalance();
    }
 
-   public void setName(String name) {
-      this.name = name;
-   }
+   public void setName(String name) { this.name = name; }
+   public String getName() { return name; }
 
-   public String getName() {
-      return name;
-   }
-
-   public void setId(String id) {
-      this.id = id;
-   }
-
-   public String getId() {
-      return id;
-   }
+   public void setId(String id) { this.id = id; }
+   public String getId() { return id; }
 
    public void setFineBalance(Integer fineBalance) { this.fineBalance = fineBalance; }
    public int getFineBalance() { return fineBalance; }
+
+   public void setBirthDate(Date birthDate) { this.birthDate = birthDate; }
+   public Date getBirthDate() { return birthDate; }
 }

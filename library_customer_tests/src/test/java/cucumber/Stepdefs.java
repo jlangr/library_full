@@ -49,7 +49,7 @@ public class Stepdefs {
 
    @Given("^a patron checks out \"(.*)\" on (\\d+/\\d+/\\d+)$")
    public void patronChecksOutHolding(String title, @Format(YMD) Date checkoutDate) {
-      libraryClient.addPatron("");
+      libraryClient.addPatron("", checkoutDate);
       checkoutResponse = libraryClient.checkOut(title, checkoutDate);
    }
 
@@ -84,9 +84,9 @@ public class Stepdefs {
       assertThat(libraryClient.currentPatron().getFineBalance(), equalTo(expectedFineBalance));
    }
 
-   @Given("^a librarian adds a patron named (.*)")
-   public void addPatron(String name) {
-      libraryClient.addPatron(name);
+   @Given("^a librarian adds a patron named (.*) with a birthdate of (\\d+/\\d+/\\d+)$")
+   public void addPatron(String name, @Format(YMD) Date birthDate) {
+      libraryClient.addPatron(name, birthDate);
    }
 
    @When("^a librarian requests a list of all patrons$")

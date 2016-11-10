@@ -12,7 +12,7 @@ public class PatronStore {
    public static void deleteAll() {
       patrons.clear();
    }
-   
+
    public void add(Patron patron) {
       if (patron.getId() == "")
          patron.setId("p" + (++idIndex));
@@ -22,6 +22,7 @@ public class PatronStore {
    private Patron copy(Patron patron) {
       Patron newPatron = new Patron(patron.getName());
       newPatron.setId(patron.getId());
+      newPatron.setBirthDate(patron.getBirthDate());
       return newPatron;
    }
 

@@ -1,10 +1,11 @@
 package api.library;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import java.util.Date;
 import org.junit.*;
-import persistence.*;
-import domain.core.*;
+import domain.core.Patron;
+import persistence.PatronStore;
 
 public class PatronServiceTest {
    PatronService service;
@@ -17,9 +18,9 @@ public class PatronServiceTest {
 
    @Test
    public void answersGeneratedId() {
-      String scanCode = service.add("name");
+      String id = service.add("name");
 
-      assertThat(scanCode, startsWith("p"));
+      assertThat(id, startsWith("p"));
    }
 
    @Test
@@ -29,6 +30,25 @@ public class PatronServiceTest {
       Patron patron = service.find("p123");
 
       assertThat(patron.getName(), equalTo("xyz"));
+   }
+
+   @Test
+   public void defaultsBirthDateToNull() {
+      service.add("p123", "xyz");
+
+      Patron patron = service.find("p123");
+
+      assertThat(patron.getBirthDate(), is(nullValue()));
+   }
+
+   @Test
+   public void allowsSpecifyingBirthDate() {
+      Date birthDate = new Date();
+      String id = service.add("xyz", birthDate);
+
+      Patron patron = service.find(id);
+
+      assertThat(patron.getBirthDate(), equalTo(birthDate));
    }
 
    @Test(expected=InvalidPatronIdException.class)

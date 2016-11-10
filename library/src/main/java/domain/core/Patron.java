@@ -1,10 +1,13 @@
 package domain.core;
 
+import java.util.Date;
+
 public class Patron {
    private final String name;
    private String id;
    private HoldingMap s = new HoldingMap();
    private int bal = 0;
+   private Date birthDate;
 
    public Patron(String id, String name) {
       this.name = name;
@@ -27,9 +30,17 @@ public class Patron {
       return name;
    }
 
+   public Date getBirthDate() {
+      return birthDate;
+   }
+
+   public void setBirthDate(Date birthDate) {
+      this.birthDate = birthDate;
+   }
+
    @Override
    public String toString() {
-      return "[" + getId() + "] " + getName();
+      return "[" + getId() + "] " + getName() + " (" + getBirthDate() + ")";
    }
 
    @Override
@@ -60,7 +71,7 @@ public class Patron {
 
    /**
     * add a fine to the patron's balance
-    * 
+    *
     * @param a
     *           the amount to add to the balance
     */
@@ -70,7 +81,7 @@ public class Patron {
 
    /**
     * add a fine to the patron's balance
-    * 
+    *
     * @param a
     *           the amount to add to the balance
     */

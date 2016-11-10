@@ -49,10 +49,11 @@ public class LibraryClient {
 
    // -- patrons --
 
-   public void addPatron(String name) {
+   public void addPatron(String name, Date birthDate) {
       PatronRequest request = new PatronRequest();
       // careful--something can't handle an overloaded single-arg ctor
       request.setName(name);
+      request.setBirthDate(birthDate);
       ResponseEntity<String> response = template.postForEntity(url("/patrons"), request, String.class);
       patronId = response.getBody();
    }
