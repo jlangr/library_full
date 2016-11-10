@@ -92,6 +92,14 @@ public class LibraryClient {
       template.postForEntity(url("/materials"), book, null);
    }
 
+   public void resetCurrentDate() {
+      template.postForEntity(url("/reset_current_date"), null, null);
+   }
+
+   public void setCurrentDate(Date date) {
+      template.postForEntity(url("/current_date"), date, null);
+   }
+
    // -- holdings --
 
    public void addHoldingsWithTitles(List<String> titles, String branchName) {

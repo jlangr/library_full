@@ -4,10 +4,38 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import static java.util.Calendar.*;
+import java.time.*;
 
 public class DateUtil {
    private static Calendar calendar = GregorianCalendar.getInstance();
    private static Calendar calendar2 = GregorianCalendar.getInstance();
+
+   private static final Clock DEFAULT_CLOCK = Clock.systemDefaultZone();
+   private static Clock clock = DEFAULT_CLOCK;
+
+   public static void fixClockAt(Date date) {
+      clock = Clock.fixed(date.toInstant(), ZoneId.systemDefault());
+   }
+
+   public static void resetClock() {
+      clock = DEFAULT_CLOCK;
+   }
+
+   public static Date getCurrentDate() {
+      return toDate(getCurrentLocalDate());
+   }
+
+   public static Date toDate(LocalDate localDate) {
+      return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+   }
+
+   public static LocalDate getCurrentLocalDate() {
+      return LocalDate.now(clock);
+   }
+
+   public static LocalDate toLocalDate(Date date) {
+      return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+   }
 
    public static Date create(int year, int month, int dayOfMonth) {
       calendar.set(year, month, dayOfMonth, 0, 0, 0);
@@ -62,5 +90,9 @@ public class DateUtil {
          dayOfYear2 += calendar.getActualMaximum(DAY_OF_YEAR);
       }
       return dayOfYear2 - dayOfYear1;
+   }
+
+   public static int ageInYears(LocalDate earlierDate, LocalDate laterDate) {
+      return Period.between(earlierDate, laterDate).getYears();
    }
 }

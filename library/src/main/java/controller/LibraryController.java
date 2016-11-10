@@ -1,9 +1,11 @@
 package controller;
 
+import java.util.Date;
 import org.springframework.web.bind.annotation.*;
 import com.loc.material.api.*;
 import api.library.LibraryData;
 import domain.core.ClassificationApiFactory;
+import util.*;
 
 @RestController
 public class LibraryController {
@@ -15,6 +17,16 @@ public class LibraryController {
    @PostMapping(value="/use_local_classification")
    public void useLocalClassificationService() {
       ClassificationApiFactory.setService(new LocalClassificationService());
+   }
+
+   @PostMapping(value="/reset_current_date")
+   public void resetCurrentDate() {
+      DateUtil.resetClock();
+   }
+
+   @PostMapping(value="/current_date")
+   public void setCurrentDate(@RequestBody Date date) {
+      DateUtil.fixClockAt(date);
    }
 
    @PostMapping(value="/materials")
