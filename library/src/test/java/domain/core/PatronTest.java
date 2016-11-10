@@ -3,8 +3,10 @@ package domain.core;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import static util.matchers.HasExactlyItemsInAnyOrder.*;
+import java.util.Calendar;
 import org.junit.*;
 import testutil.*;
+import util.*;
 
 public class PatronTest {
    private Patron jane;
@@ -71,6 +73,16 @@ public class PatronTest {
       jane.remit(25);
 
       assertThat(jane.fineBalance(), equalTo(15));
+   }
+
+   @Test
+   public void determineAge() {
+      jane.setBirthDate(DateUtil.create(2000, Calendar.MARCH, 1));
+      DateUtil.fixClockAt(DateUtil.create(2011, Calendar.JANUARY, 2));
+
+      int age = jane.getAge();
+
+      assertThat(age, equalTo(10));
    }
 
    @Test

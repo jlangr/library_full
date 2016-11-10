@@ -8,6 +8,7 @@ public class PatronRequest {
    private String id;
    private int fineBalance;
    private Date birthDate;
+   private int age;
 
    public PatronRequest() {
    }
@@ -17,6 +18,7 @@ public class PatronRequest {
       this.name = patron.getName();
       this.birthDate = patron.getBirthDate();
       this.fineBalance = patron.fineBalance();
+      this.age = patron.getAge();
    }
 
    public void setName(String name) { this.name = name; }
@@ -30,4 +32,7 @@ public class PatronRequest {
 
    public void setBirthDate(Date birthDate) { this.birthDate = birthDate; }
    public Date getBirthDate() { return birthDate; }
+
+   public void setAge(int age) { this.age = age; }
+   public int getAge() { return age; }
 }

@@ -65,8 +65,7 @@ public class Stepdefs {
 
    @Then("^the due date for \"(.*)\" is (\\d+/\\d+/\\d+)$")
    public void assertDueDate(String title, @Format(YMD) Date dueDate) {
-      assertThat(libraryClient.retrieveHoldingWithTitle(title).getDateDue(),
-         equalTo(dueDate));
+      assertThat(libraryClient.retrieveHoldingWithTitle(title).getDateDue(), equalTo(dueDate));
    }
 
    @When("^\"(.*)\" is returned on (\\d+/\\d+/\\d+) to \"(.*)\"$")
@@ -87,6 +86,12 @@ public class Stepdefs {
    @Given("^a librarian adds a patron named (.*) with a birthdate of (\\d+/\\d+/\\d+)$")
    public void addPatron(String name, @Format(YMD) Date birthDate) {
       libraryClient.addPatron(name, birthDate);
+   }
+
+   // TODO clever way to combine this and prior stepdef?
+   @Given("^a librarian adds a patron with a birthday of (\\d+/\\d+/\\d+)$")
+   public void addPatron(@Format(YMD) Date birthDate) {
+      libraryClient.addPatron("", birthDate);
    }
 
    @When("^a librarian requests a list of all patrons$")
@@ -113,5 +118,19 @@ public class Stepdefs {
    @Then("^the \"([^\"]*)\" branch contains the following holdings:$")
    public void assertBranchContains(String branchName, @Format("yyyy/M/d") DataTable holdings) {
       holdings.unorderedDiff(libraryClient.retrieveHoldingsAtBranch(branchName));
+   }
+
+   @When("^today's date is (\\d+/\\d+/\\d+)$")
+   public void setCurrentDate(@Format(YMD) Date date) throws Throwable {
+      libraryClient.setCurrentDate(date);
+   }
+
+   @Then("^the patron is (\\d+) years old$")
+   public void assertPatronAge(int expectedAge) {
+      try {
+         assertThat(libraryClient.currentPatron().getAge(), equalTo(expectedAge));
+      } finally {
+         libraryClient.resetCurrentDate();
+      }
    }
 }

@@ -13,7 +13,6 @@ Scenario: Add new patron
    | name       | fine balance | birth date  |
    | Anastasius | 0            | 1980/10/01  | 
    
-@ignore
 Scenario: Calculate patron age
    Given a librarian adds a patron with a birthday of 1980/10/01
    When today's date is 2017/10/2

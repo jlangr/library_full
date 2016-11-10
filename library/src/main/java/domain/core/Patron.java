@@ -1,6 +1,7 @@
 package domain.core;
 
 import java.util.Date;
+import static util.DateUtil.*;
 
 public class Patron {
    private final String name;
@@ -87,5 +88,9 @@ public class Patron {
     */
    public void remit(int a) {
       bal -= a;
+   }
+
+   public int getAge() {
+      return ageInYears(toLocalDate(getBirthDate()), getCurrentLocalDate());
    }
 }
