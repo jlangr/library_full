@@ -17,7 +17,6 @@ Scenario: Book incurs no fine when returned on due date
    Then the patron's fine balance is 0
    
 # NB: Outline must be uppercase!
-@only
 Scenario Outline: Book incurs fine when returned after due date
    Given a patron checks out "The Trial" on <checkoutDate>
    When "The Trial" is returned on <checkinDate>
