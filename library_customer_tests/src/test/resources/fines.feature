@@ -11,7 +11,7 @@ Scenario: Due date for book is 21 days after checkout
    When a patron checks out "Catch-22" on 2017/3/1
    Then the due date for "Catch-22" is 2017/3/22
    
-Scenario: Book incurs no fine when returned on due date
+Scenario: Patron incurs no fine when returned on due date
    Given a patron checks out "Catch-22" on 2017/4/1
    When "Catch-22" is returned on 2017/4/22
    Then the patron's fine balance is 0
