@@ -28,7 +28,7 @@ public class PatronServiceTest {
 
       Patron patron = service.find("p123");
 
-      assertThat(patron.getName(), equalTo("xyzXXXX"));
+      assertThat(patron.getName(), equalTo("xyz"));
    }
 
    @Test(expected=InvalidPatronIdException.class)
