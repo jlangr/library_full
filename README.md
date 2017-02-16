@@ -12,6 +12,15 @@ Eclipse Instructions
 * In the `Package Explorer`, expand the tree and click on the entry `library->src/test/junit->default package`.
 * Right-click the selected `Package Explorer` entry and click `Run As->JUnit Test`. You should see at least 190 green unit tests, and they should run in a few seconds at most.
 
+Custom IntelliJ Setup
+---
+
+* Ensure you are on the Guest Network (MyNet)
+    * From terminal run `~/compozed-workstation/bin/set_mynet`
+* From Intellij menu, select `File->Open` 
+* Select project folder and click `Open`
+* **Note**: Do not import or open from build.gradle as this will overwrite existing JUnit Test Run Configuration
+
 This source base requires JDK 8.
 
 Please don't hesitate to contact me at jeff @ langrsoft.com if you have any problems.
