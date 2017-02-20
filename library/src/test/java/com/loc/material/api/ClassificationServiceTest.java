@@ -2,16 +2,19 @@ package com.loc.material.api;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static util.MapUtil.createMap;
 import java.util.*;
 import static java.util.Arrays.asList;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import org.mockito.*;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.client.RestTemplate;
 import testutil.Slow;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ClassificationServiceTest {
    private static final String THE_ROAD_AUTHOR = "Cormac McCarthy";
    private static final String THE_ROAD_ISBN = "0-307-26543-9";
@@ -23,11 +26,6 @@ public class ClassificationServiceTest {
    private RestTemplate restTemplate;
    @InjectMocks
    private ClassificationService service;
-
-   @Before
-   public void create() {
-      MockitoAnnotations.initMocks(this);
-   }
 
    @Test
    public void retrieveMaterialPopulatesFromResponse() {
