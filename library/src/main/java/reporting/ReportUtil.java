@@ -22,7 +22,7 @@ public class ReportUtil {
                     pads += " ";
                 }
                 buffer1.append(pads);
-                return buffer1.toString();
+                break;
             case pad:
                 pads = " ";
                 l = spacing;
@@ -33,6 +33,7 @@ public class ReportUtil {
                 buffer.append(x);
                 buffer.append(pads);
                 buffer1.append(buffer.toString());
+                break;
         }
         return buffer1.toString();
     }
