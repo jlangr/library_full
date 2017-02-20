@@ -29,7 +29,7 @@ public class InventoryReport {
         this.congress = new LibraryOfCongress();
     }
 
-    public String allBooks() throws IOException {
+    public void allBooks() throws IOException {
         List<Record> records = new ArrayList<Record>();
         for (Holding holding : catalog) {
             if (holding.getMaterial().getFormat() == MaterialType.Book) {
@@ -92,7 +92,6 @@ public class InventoryReport {
         } finally {
             writer.close();
         }
-        return result;
     }
 
     private void appendHeader(StringBuffer buffer) {
