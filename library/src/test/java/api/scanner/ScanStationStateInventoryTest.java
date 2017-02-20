@@ -1,7 +1,7 @@
 package api.scanner;
 
 import static api.scanner.ScanStationStateInventory.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 import org.junit.Test;

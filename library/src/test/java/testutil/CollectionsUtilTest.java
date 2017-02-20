@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import java.util.*;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 
 public class CollectionsUtilTest {
    private Collection<Object> collection;

@@ -1,7 +1,7 @@
 package util;
 
 import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static util.matchers.HasExactlyItemsInAnyOrder.*;
 import java.util.Collection;
 import java.util.List;

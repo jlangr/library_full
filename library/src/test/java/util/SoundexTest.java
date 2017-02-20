@@ -4,7 +4,7 @@ import org.junit.*;
 //import org.junit.runner.*;
 //import testutil.*;
 import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 
 //Implementing the Soundex Algorithm--Test-First
 //

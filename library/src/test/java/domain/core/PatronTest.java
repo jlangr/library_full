@@ -1,7 +1,7 @@
 package domain.core;
 
 import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static util.matchers.HasExactlyItemsInAnyOrder.*;
 import org.junit.*;
 import testutil.*;

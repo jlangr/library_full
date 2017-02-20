@@ -1,6 +1,6 @@
 package api.library;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
 import static util.matchers.HasExactlyItems.hasExactlyItems;
 import java.util.List;

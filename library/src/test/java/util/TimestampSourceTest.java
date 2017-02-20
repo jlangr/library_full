@@ -1,6 +1,6 @@
 package util;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static util.matchers.LessThan.lessThan;
 

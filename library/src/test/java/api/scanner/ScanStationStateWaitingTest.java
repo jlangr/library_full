@@ -1,7 +1,7 @@
 package api.scanner;
 
 import static api.scanner.ScanStationStateWaiting.MSG_SCAN_BRANCH_ID_FIRST;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import org.junit.Test;
