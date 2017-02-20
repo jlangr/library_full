@@ -34,62 +34,45 @@ public class InventoryReport {
 
       StringBuffer buffer = new StringBuffer();
       appendHeader(buffer);
-      appendColumnHeaders(buffer);
+       buffer.append(ReportUtil.transform("Title",
+               TITLE_LENGTH + SPACING, TITLE_LENGTH + SPACING - "Title".length(), ReportUtil.StringOp.pad));
+       buffer.append(ReportUtil.transform("Branch",
+               BRANCH_LENGTH + SPACING, BRANCH_LENGTH + SPACING - "Branch".length(), ReportUtil.StringOp.pad));
+       buffer.append(ReportUtil.transform("Author",
+               AUTHOR_LENGTH + SPACING, AUTHOR_LENGTH + SPACING - "Author".length(), ReportUtil.StringOp.pad));
+       buffer.append(ReportUtil.transform("Year", YEAR_LENGTH, YEAR_LENGTH - "Year".length(), ReportUtil.StringOp.pad));
+       buffer.append(ReportUtil.transform("ISBN", ISBN_LENGTH, ISBN_LENGTH - "ISBN".length(), ReportUtil.StringOp.pad));
+      buffer.append(NEWLINE);
+
+      buffer.append(ReportUtil.transform("", TITLE_LENGTH, SPACING, ReportUtil.StringOp.under));
+      buffer.append(ReportUtil.transform("", BRANCH_LENGTH, SPACING, ReportUtil.StringOp.under));
+      buffer.append(ReportUtil.transform("", AUTHOR_LENGTH, SPACING, ReportUtil.StringOp.under));
+      buffer.append(ReportUtil.transform("", YEAR_LENGTH, SPACING, ReportUtil.StringOp.under));
+      buffer.append(NEWLINE);
 
       for (Record record: records) {
-         append(buffer, record);
+//        return buffer.toString();
+          buffer.append(ReportUtil.transform(record.title, TITLE_LENGTH,
+                  TITLE_LENGTH - record.title.length(), ReportUtil.StringOp.pad));
+          buffer.append(ReportUtil.transform("", SPACING, SPACING - "".length(), ReportUtil.StringOp.pad));
+          buffer.append(ReportUtil.transform(record.branch, BRANCH_LENGTH,
+                  BRANCH_LENGTH - record.branch.length(), ReportUtil.StringOp.pad));
+          buffer.append(ReportUtil.transform("", SPACING, SPACING - "".length(), ReportUtil.StringOp.pad));
+          buffer.append(ReportUtil.transform(record.author, AUTHOR_LENGTH,
+                  AUTHOR_LENGTH - record.author.length(), ReportUtil.StringOp.pad));
+          buffer.append(ReportUtil.transform("", SPACING, SPACING - "".length(), ReportUtil.StringOp.pad));
+          buffer.append(ReportUtil.transform(record.year, YEAR_LENGTH,
+                  YEAR_LENGTH - record.year.length(), ReportUtil.StringOp.pad));
+          buffer.append(ReportUtil.transform("", SPACING, SPACING - "".length(), ReportUtil.StringOp.pad));
+          buffer.append(ReportUtil.transform(record.isbn, ISBN_LENGTH,
+                  ISBN_LENGTH - record.isbn.length(), ReportUtil.StringOp.pad));
+         buffer.append(NEWLINE);
       }
 
       return buffer.toString();
    }
 
-   private void appendColumnHeaders(StringBuffer buffer) {
-      buffer.append(pad("Title", TITLE_LENGTH + SPACING));
-      buffer.append(pad("Branch", BRANCH_LENGTH + SPACING));
-      buffer.append(pad("Author", AUTHOR_LENGTH + SPACING));
-      buffer.append(pad("Year", YEAR_LENGTH));
-      buffer.append(pad("ISBN", ISBN_LENGTH));
-      buffer.append(NEWLINE);
-
-      buffer.append(underlines(TITLE_LENGTH, SPACING));
-      buffer.append(underlines(BRANCH_LENGTH, SPACING));
-      buffer.append(underlines(AUTHOR_LENGTH, SPACING));
-      buffer.append(underlines(YEAR_LENGTH, SPACING));
-      buffer.append(NEWLINE);
-   }
-
-   private void append(StringBuffer buffer, Record record) {
-      buffer.append(pad(record.title, TITLE_LENGTH));
-      buffer.append(pad(SPACING));
-      buffer.append(pad(record.branch, BRANCH_LENGTH));
-      buffer.append(pad(SPACING));
-      buffer.append(pad(record.author, AUTHOR_LENGTH));
-      buffer.append(pad(SPACING));
-      buffer.append(pad(record.year, YEAR_LENGTH));
-      buffer.append(pad(SPACING));
-      buffer.append(pad(record.isbn, ISBN_LENGTH));
-      buffer.append(NEWLINE);
-   }
-
-   private String pad(int totalLength) {
-      return pad("", totalLength);
-   }
-
-   private String pad(String text, int totalLength) {
-      StringBuffer buffer = new StringBuffer(text);
-      for (int i = 0; i < totalLength - text.length(); i++)
-         buffer.append(' ');
-      return buffer.toString();
-   }
-
-   private String underlines(int count, int spacing) {
-      StringBuffer buffer = new StringBuffer();
-      for (int i = 0; i < count; i++)
-         buffer.append('-');
-      return pad(buffer.toString(), count + spacing);
-   }
-
-   private void appendHeader(StringBuffer buffer) {
+    private void appendHeader(StringBuffer buffer) {
       buffer.append("Inventory" + NEWLINE);
       buffer.append(NEWLINE);
    }
@@ -107,6 +90,11 @@ public class InventoryReport {
          this.author = holding.getMaterial().getAuthor();
          this.year = holding.getMaterial().getYear();
          this.isbn = congress.getISBN(holding.getMaterial().getClassification());
+      }
+
+      @Override
+      public String toString() {
+         return this.title + " " + this.isbn;
       }
 
       @Override
