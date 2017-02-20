@@ -1,5 +1,9 @@
 package reporting;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,15 +19,17 @@ public class InventoryReport {
     private static final int AUTHOR_LENGTH = 30;
     private static final int YEAR_LENGTH = 6;
     private static final int ISBN_LENGTH = 10;
+    private static final String OUTPUT_FILENAME = "./InventoryReport.txt";
     private Catalog catalog;
     private LibraryOfCongress congress;
+    private static final int RECORD_LIMIT = 100;
 
     public InventoryReport(Catalog catalog) {
         this.catalog = catalog;
         this.congress = new LibraryOfCongress();
     }
 
-    public String allBooks() {
+    public String allBooks() throws IOException {
         List<Record> records = new ArrayList<Record>();
         for (Holding holding : catalog) {
             if (holding.getMaterial().getFormat() == MaterialType.Book) {
@@ -53,8 +59,12 @@ public class InventoryReport {
         buffer.append(ReportUtil.transform("", YEAR_LENGTH, SPACING, ReportUtil.StringOp.under));
         buffer.append(NEWLINE);
 
+        int i = 0;
         for (Record record : records) {
-//        return buffer.toString();
+            if (i == RECORD_LIMIT) {
+                buffer.append("... (only 1st " + RECORD_LIMIT + " records shown) ...");
+                break;
+            }
             buffer.append(ReportUtil.transform(record.title, TITLE_LENGTH,
                     TITLE_LENGTH - record.title.length(), ReportUtil.StringOp.pad));
             buffer.append(ReportUtil.transform("", SPACING, SPACING - "".length(), ReportUtil.StringOp.pad));
@@ -70,9 +80,19 @@ public class InventoryReport {
             buffer.append(ReportUtil.transform(record.isbn, ISBN_LENGTH,
                     ISBN_LENGTH - record.isbn.length(), ReportUtil.StringOp.pad));
             buffer.append(NEWLINE);
+            i++;
         }
 
-        return buffer.toString();
+        String result = buffer.toString();
+
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(OUTPUT_FILENAME));
+            writer.write(result, 0, result.length());
+        } finally {
+            writer.close();
+        }
+        return result;
     }
 
     private void appendHeader(StringBuffer buffer) {
