@@ -1,7 +1,6 @@
 package reporting;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,7 +39,6 @@ public class InventoryReport {
         Collections.sort(records);
 
         StringBuffer buffer = new StringBuffer();
-        appendHeader(buffer);
         buffer.append(ReportUtil.transform("Title",
                 TITLE_LENGTH + SPACING, TITLE_LENGTH + SPACING - "Title".length(), ReportUtil.StringOp.pad));
         buffer.append(ReportUtil.transform("Branch",
@@ -88,15 +86,12 @@ public class InventoryReport {
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(OUTPUT_FILENAME));
+            writer.write("Inventory Report");
+            writer.write(NEWLINE);
             writer.write(result, 0, result.length());
         } finally {
             writer.close();
         }
-    }
-
-    private void appendHeader(StringBuffer buffer) {
-        buffer.append("Inventory" + NEWLINE);
-        buffer.append(NEWLINE);
     }
 
     class Record implements Comparable<Record> {
