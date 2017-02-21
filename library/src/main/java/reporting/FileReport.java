@@ -12,7 +12,8 @@ public class FileReport implements Report {
     private String filename;
     private String name;
     private String text;
-    private static final String FTP_SERVER = "ftp.langrsoft.com"; // = "gatekeeper.dec.com";
+    private static final String FTP_SERVER = "ftp.somewhere.com";
+//       "gatekeeper.dec.com";
 
     public FileReport(String filename) {
         this.filename = filename;
@@ -64,10 +65,7 @@ public class FileReport implements Report {
     @Override
     public String getText() {
         if (!isLoaded) {
-            String[] list = load(filename);
-            name = list[0];
-            text = list[1];
-            isLoaded = true;
+            load();
         }
         return text;
     }
@@ -75,17 +73,27 @@ public class FileReport implements Report {
     @Override
     public String getName() {
         if (!isLoaded) {
-            String[] list = load(filename);
-            name = list[0];
-            text = list[1];
-            isLoaded = true;
+            load();
         }
         return name;
     }
 
-    private String[] load(String filename) {
+    private void load() {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(filename));
+            InputStreamReader reader = new FileReader("local.txt");
+            String[] list = load(reader);
+            name = list[0];
+            text = list[1];
+            isLoaded = true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String[] load(InputStreamReader inputStreamReader) {
+        try {
+            BufferedReader reader = new BufferedReader(inputStreamReader);
             String first = reader.readLine();
             StringBuffer buffer = new StringBuffer();
             String line = null;
