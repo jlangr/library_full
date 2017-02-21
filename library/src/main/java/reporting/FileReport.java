@@ -80,7 +80,7 @@ public class FileReport implements Report {
 
     private void load() {
         try {
-            InputStreamReader reader = new FileReader("local.txt");
+            BufferedReader reader = new BufferedReader(new FileReader("local.txt"));
             String[] list = load(reader);
             name = list[0];
             text = list[1];
@@ -91,21 +91,24 @@ public class FileReport implements Report {
         }
     }
 
-    private String[] load(InputStreamReader inputStreamReader) {
+    private String[] load(BufferedReader reader) {
         try {
-            BufferedReader reader = new BufferedReader(inputStreamReader);
             String first = reader.readLine();
+
             StringBuffer buffer = new StringBuffer();
+
             String line = null;
             while ((line = reader.readLine()) != null) {
                 buffer.append(line);
+                buffer.append(System.lineSeparator());
             }
             String rest = buffer.toString();
 
             return new String[]{first, rest};
 
         } catch (IOException e) {
-            throw new RuntimeException("unable to load " + filename, e);
+            throw new RuntimeException("unable to load "/*  + filename */, e);
         }
     }
+
 }
