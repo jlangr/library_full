@@ -183,12 +183,11 @@ public class Asserts {
                 BigDecimal itemTotal = null;
                 String message = "";
                 if (item.isDiscountable()) {
-                    BigDecimal itemPrice = item.price();
-                    itemTotal = itemPrice.multiply(BigDecimal.ONE.subtract(memberDiscount));
+                    itemTotal = item.price().multiply(BigDecimal.ONE.subtract(memberDiscount));
                     totalOfDiscountedItems = totalOfDiscountedItems.add(itemTotal);
                     message =
                             "item: " + item.getDescription() +
-                            " price: " + new DecimalFormat("#0.00").format(itemPrice) +
+                            " price: " + new DecimalFormat("#0.00").format(item.price()) +
                             " discounted price: " + new DecimalFormat("#0.00").format(itemTotal);
                 }
                 else {
