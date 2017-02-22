@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,6 +165,7 @@ public class Asserts {
         private BigDecimal total;
         private BigDecimal memberDiscount = BigDecimal.ZERO;
         private BigDecimal totalOfDiscountedItems;
+        private List<String> registerMessages = new ArrayList<>();
 
         BigDecimal getTotal() {
             return total;
@@ -174,19 +176,30 @@ public class Asserts {
         }
 
         public void completeSale() {
+            registerMessages.clear();
             total = BigDecimal.ZERO;
             totalOfDiscountedItems = BigDecimal.ZERO;
             for (Item item : purchases) {
                 BigDecimal itemTotal = null;
+                String message = "";
                 if (item.isDiscountable()) {
-                    itemTotal = item.price().multiply(BigDecimal.ONE.subtract(memberDiscount));
+                    BigDecimal itemPrice = item.price();
+                    itemTotal = itemPrice.multiply(BigDecimal.ONE.subtract(memberDiscount));
                     totalOfDiscountedItems = totalOfDiscountedItems.add(itemTotal);
+                    message =
+                            "item: " + item.getDescription() +
+                            " price: " + new DecimalFormat("#0.00").format(itemPrice) +
+                            " discounted price: " + new DecimalFormat("#0.00").format(itemTotal);
                 }
-                else
+                else {
                     itemTotal = item.price();
+                    message =
+                            "item: " + item.getDescription() +
+                            " price: " + new DecimalFormat("#0.00").format(itemTotal);
+                }
                 total = total.add(itemTotal);
-                String message = "item" + item.getDescription() + " price:" + itemTotal;
                 appendMessage(message);
+                registerMessages.add(message);
             }
         }
 
@@ -201,6 +214,25 @@ public class Asserts {
         public BigDecimal getTotalOfDiscountedItems() {
             return totalOfDiscountedItems;
         }
+
+        public List<String> getRegisterMessages() {
+            return registerMessages;
+        }
+    }
+
+    @Test
+    public void includesLineItemWithDiscount() {
+        Register register = new Register() {
+            @Override
+            void appendMessage(String m) {
+            }
+        };
+        register.setMemberDiscount(new BigDecimal(0.1));
+        register.purchase(new Item("milk", new BigDecimal(10)));
+
+        register.completeSale();
+
+        assertThat(register.getRegisterMessages().get(0), is(equalTo("item: milk price: 10.00 discounted price: 9.00")));
     }
 
     @Test
