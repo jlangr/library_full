@@ -180,15 +180,16 @@ public class Asserts {
             total = BigDecimal.ZERO;
             totalOfDiscountedItems = BigDecimal.ZERO;
             for (Item item : purchases) {
-                BigDecimal itemTotal = null;
+                BigDecimal itemTotal = BigDecimal.ZERO;
                 String message = "";
                 if (item.isDiscountable()) {
-                    itemTotal = item.price().multiply(BigDecimal.ONE.subtract(memberDiscount));
-                    totalOfDiscountedItems = totalOfDiscountedItems.add(itemTotal);
+                    BigDecimal discountedItemTotal = item.price().multiply(BigDecimal.ONE.subtract(memberDiscount));
+                    totalOfDiscountedItems = totalOfDiscountedItems.add(discountedItemTotal);
                     message =
                             "item: " + item.getDescription() +
                             " price: " + new DecimalFormat("#0.00").format(item.price()) +
-                            " discounted price: " + new DecimalFormat("#0.00").format(itemTotal);
+                            " discounted price: " + new DecimalFormat("#0.00").format(discountedItemTotal);
+                    itemTotal = itemTotal.add(discountedItemTotal);
                 }
                 else {
                     itemTotal = item.price();
