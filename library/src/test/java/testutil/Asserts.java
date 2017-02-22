@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,9 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+/**
+ * scratch class used as the basis for many of the slide examples.
+ */
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class Asserts {
     interface StockLookupSvc {
@@ -122,21 +126,30 @@ public class Asserts {
         verify(auditor).recordEvent("scanned:123");
     }
 
-    class Purchase {
+    class Item {
         private String description;
-        private int amount;
+        private BigDecimal amount;
+        private boolean isDiscountable = true;
 
-        public Purchase(String description, int amount) {
+        public Item(String description, BigDecimal price) {
             this.description = description;
-            this.amount = amount;
+            this.amount = price;
         }
 
         public String getDescription() {
             return description;
         }
 
-        public int getAmount() {
+        public BigDecimal price() {
             return amount;
+        }
+
+        public void setNonDiscountable() {
+            isDiscountable = false;
+        }
+
+        public boolean isDiscountable() {
+            return isDiscountable;
         }
     }
 
@@ -147,18 +160,32 @@ public class Asserts {
     }
 
     class Register {
-        private List<Purchase> purchases = new ArrayList<>();
-        private int total;
+        private List<Item> purchases = new ArrayList<>();
+        private BigDecimal total;
+        private BigDecimal memberDiscount = BigDecimal.ZERO;
+        private BigDecimal totalOfDiscountedItems;
 
-        int getTotal() {
+        BigDecimal getTotal() {
             return total;
         }
 
+        void setMemberDiscount(BigDecimal memberDiscount) {
+            this.memberDiscount = memberDiscount;
+        }
+
         public void completeSale() {
-            total = 0;
-            for (Purchase purchase : purchases) {
-                String message = "item" + purchase.getDescription();
-                total += purchase.getAmount();
+            total = BigDecimal.ZERO;
+            totalOfDiscountedItems = BigDecimal.ZERO;
+            for (Item item : purchases) {
+                BigDecimal itemTotal = null;
+                if (item.isDiscountable()) {
+                    itemTotal = item.price().multiply(BigDecimal.ONE.subtract(memberDiscount));
+                    totalOfDiscountedItems = totalOfDiscountedItems.add(itemTotal);
+                }
+                else
+                    itemTotal = item.price();
+                total = total.add(itemTotal);
+                String message = "item" + item.getDescription() + " price:" + itemTotal;
                 appendMessage(message);
             }
         }
@@ -167,23 +194,69 @@ public class Asserts {
             DisplayDevice.appendMessage(message);
         }
 
-        public void purchase(Purchase item) {
+        public void purchase(Item item) {
             purchases.add(item);
+        }
+
+        public BigDecimal getTotalOfDiscountedItems() {
+            return totalOfDiscountedItems;
         }
     }
 
     @Test
-    public void itestCompleteSale() {
+    public void completeSaleAnswersItemsTotal() {
         Register register = new Register() {
             @Override
             void appendMessage(String m) {
             }
         };
-        register.purchase(new Purchase("milk", 42));
+        register.purchase(new Item("milk", new BigDecimal(42)));
 
         register.completeSale();
 
-        assertThat(register.getTotal(), is(equalTo(42)));
+        assertThat(register.getTotal(), is(equalTo(new BigDecimal(42l))));
+    }
+
+    static final BigDecimal TOLERANCE = new BigDecimal(0.005);
+
+    @Test
+    public void completeSaleIncorporatesDiscounts() {
+        Register register = new Register() { @Override void appendMessage(String m) { } };
+        register.setMemberDiscount(new BigDecimal(0.1));
+        register.purchase(new Item("milk", new BigDecimal(5)));
+        register.purchase(new Item("cookies", new BigDecimal(5)));
+
+        register.completeSale();
+
+        assertThat(register.getTotal(), is(closeTo(new BigDecimal(9), TOLERANCE)));
+    }
+
+    @Test
+    public void someItemsNotDiscountable() {
+        Register register = new Register() { @Override void appendMessage(String m) { } };
+        register.setMemberDiscount(new BigDecimal(0.1));
+        register.purchase(new Item("cookies", new BigDecimal(10)));
+        Item nonDiscountable = new Item("scrapple", new BigDecimal(10));
+        nonDiscountable.setNonDiscountable();
+        register.purchase(nonDiscountable);
+
+        register.completeSale();
+
+        assertThat(register.getTotal(), is(closeTo(new BigDecimal(19), TOLERANCE)));
+    }
+
+    @Test
+    public void answersTotalOfDiscountedItems() {
+        Register register = new Register() { @Override void appendMessage(String m) { } };
+        register.setMemberDiscount(new BigDecimal(0.1));
+        register.purchase(new Item("cookies", new BigDecimal(10)));
+        Item nonDiscountable = new Item("scrapple", new BigDecimal(5));
+        nonDiscountable.setNonDiscountable();
+        register.purchase(nonDiscountable);
+
+        register.completeSale();
+
+        assertThat(register.getTotalOfDiscountedItems(), is(closeTo(new BigDecimal(9), TOLERANCE)));
     }
 
     class VerificationService {
@@ -202,5 +275,7 @@ public class Asserts {
             this.timeout = timeout;
         }
     }
+
+
 }
 
