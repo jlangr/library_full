@@ -175,33 +175,33 @@ public class Asserts {
             this.memberDiscount = memberDiscount;
         }
 
-        public void completeSale() {
-            registerMessages.clear();
-            total = BigDecimal.ZERO;
-            totalOfDiscountedItems = BigDecimal.ZERO;
-            for (Item item : purchases) {
-                BigDecimal itemTotal = BigDecimal.ZERO;
-                String message = "";
-                if (item.isDiscountable()) {
-                    BigDecimal discountedItemTotal = item.price().multiply(BigDecimal.ONE.subtract(memberDiscount));
-                    totalOfDiscountedItems = totalOfDiscountedItems.add(discountedItemTotal);
-                    message =
-                            "item: " + item.getDescription() +
-                            " price: " + new DecimalFormat("#0.00").format(item.price()) +
-                            " discounted price: " + new DecimalFormat("#0.00").format(discountedItemTotal);
-                    itemTotal = itemTotal.add(discountedItemTotal);
-                }
-                else {
-                    itemTotal = item.price();
-                    message =
-                            "item: " + item.getDescription() +
-                            " price: " + new DecimalFormat("#0.00").format(itemTotal);
-                }
-                total = total.add(itemTotal);
-                appendMessage(message);
-                registerMessages.add(message);
-            }
+public void completeSale() {
+    registerMessages.clear();
+    total = BigDecimal.ZERO;
+    totalOfDiscountedItems = BigDecimal.ZERO;
+    for (Item item : purchases) {
+        BigDecimal itemTotal = BigDecimal.ZERO;
+        String message = "";
+        if (item.isDiscountable()) {
+            BigDecimal discounted = item.price().multiply(BigDecimal.ONE.subtract(memberDiscount));
+            totalOfDiscountedItems = totalOfDiscountedItems.add(discounted);
+            message =
+                    "item: " + item.getDescription() +
+                    " price: " + new DecimalFormat("#0.00").format(item.price()) +
+                    " discounted price: " + new DecimalFormat("#0.00").format(discounted);
+            itemTotal = itemTotal.add(discounted);
         }
+        else {
+            itemTotal = item.price();
+            message =
+                    "item: " + item.getDescription() +
+                    " price: " + new DecimalFormat("#0.00").format(itemTotal);
+        }
+        total = total.add(itemTotal);
+        appendMessage(message);
+        registerMessages.add(message);
+    }
+}
 
         void appendMessage(String message) {
             DisplayDevice.appendMessage(message);
