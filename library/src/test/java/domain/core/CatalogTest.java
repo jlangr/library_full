@@ -1,100 +1,105 @@
 package domain.core;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.*;
-import static util.matchers.HasExactlyItems.hasExactlyItems;
-import java.util.*;
-import org.junit.*;
 import com.loc.material.api.Material;
+import org.junit.Before;
+import org.junit.Test;
 import persistence.HoldingStore;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static util.matchers.HasExactlyItems.hasExactlyItems;
+
 public class CatalogTest {
-   private Catalog catalog = new Catalog();
-   private HoldingBuilder holdingBuilder = new HoldingBuilder();
+    private Catalog catalog = new Catalog();
+    private HoldingBuilder holdingBuilder = new HoldingBuilder();
 
-   @Before
-   public void initialize() {
-      HoldingStore.deleteAll();
-   }
+    @Before
+    public void initialize() {
+        HoldingStore.deleteAll();
+    }
 
-   @Test
-   public void isEmptyOnCreation() {
-      assertThat(catalog.size(), equalTo(0));
-   }
+    @Test
+    public void isEmptyOnCreation() {
+        assertThat(catalog.size(), equalTo(0));
+    }
 
-   @Test
-   public void incrementsSizeWhenMaterialAdded() {
-      catalog.add(holdingBuilder.create());
+    @Test
+    public void incrementsSizeWhenMaterialAdded() {
+        catalog.add(holdingBuilder.create());
 
-      assertThat(catalog.size(), equalTo(1));
-   }
+        assertThat(catalog.size(), equalTo(1));
+    }
 
-   @Test
-   public void answersEmptyForNonexistentMaterial() {
-      assertTrue(catalog.findAll("nonexistentid").isEmpty());
-   }
+    @Test
+    public void answersEmptyForNonexistentMaterial() {
+        assertTrue(catalog.findAll("nonexistentid").isEmpty());
+    }
 
-   @Test
-   public void findAllReturnsListOfHoldings() {
-      String classification = "123";
-      String barcode = addHoldingWithClassification(classification);
-      String barcode2 = addHoldingWithClassification(classification);
+    @Test
+    public void findAllReturnsListOfHoldings() {
+        String classification = "123";
+        String barcode = addHoldingWithClassification(classification);
+        String barcode2 = addHoldingWithClassification(classification);
 
-      List<Holding> holdings = catalog.findAll(classification);
+        List<Holding> holdings = catalog.findAll(classification);
 
-      Holding retrieved1 = catalog.find(barcode);
-      Holding retrieved2 = catalog.find(barcode2);
-      assertThat(holdings, equalTo(asList(retrieved1, retrieved2)));
-   }
+        Holding retrieved1 = catalog.find(barcode);
+        Holding retrieved2 = catalog.find(barcode2);
+        assertThat(holdings, equalTo(asList(retrieved1, retrieved2)));
+    }
 
-   private String addHoldingWithClassification(String classification) {
-      Material material = new Material("", "", "", classification, "");
-      Holding holding = holdingBuilder.with(material).create();
-      return catalog.add(holding);
-   }
+    private String addHoldingWithClassification(String classification) {
+        Material material = new Material("", "", "", classification, "");
+        Holding holding = holdingBuilder.with(material).create();
+        return catalog.add(holding);
+    }
 
-   @Test
-   public void findAllReturnsOnlyHoldingsWithMatchingClassification() {
-      String barcode1 = addHoldingWithClassification("123");
-      addHoldingWithClassification("456");
+    @Test
+    public void findAllReturnsOnlyHoldingsWithMatchingClassification() {
+        String barcode1 = addHoldingWithClassification("123");
+        addHoldingWithClassification("456");
 
-      List<Holding> retrieved = catalog.findAll("123");
+        List<Holding> retrieved = catalog.findAll("123");
 
-      assertThat(retrieved.size(), equalTo(1));
-      assertThat(retrieved.get(0).getBarcode(), equalTo(barcode1));
-   }
+        assertThat(retrieved.size(), equalTo(1));
+        assertThat(retrieved.get(0).getBarcode(), equalTo(barcode1));
+    }
 
-   @Test
-   public void retrievesHoldingUsingBarcode() {
-      Holding holding = holdingBuilder.create();
-      String barcode = catalog.add(holding);
+    @Test
+    public void retrievesHoldingUsingBarcode() {
+        Holding holding = holdingBuilder.create();
+        String barcode = catalog.add(holding);
 
-      Holding retrieved = catalog.find(barcode);
+        Holding retrieved = catalog.find(barcode);
 
-      assertThat(retrieved, equalTo(holding));
-   }
+        assertThat(retrieved, equalTo(holding));
+    }
 
-   @Test
-   public void incrementsCopyNumberWhenSameClassificationExists() {
-      Holding holding = holdingBuilder.create();
-      catalog.add(holding);
-      String barcode = catalog.add(holding);
+    @Test
+    public void incrementsCopyNumberWhenSameClassificationExists() {
+        Holding holding = holdingBuilder.create();
+        catalog.add(holding);
+        String barcode = catalog.add(holding);
 
-      Holding retrieved = catalog.find(barcode);
+        Holding retrieved = catalog.find(barcode);
 
-      assertThat(retrieved.getCopyNumber(), equalTo(2));
-   }
+        assertThat(retrieved.getCopyNumber(), equalTo(2));
+    }
 
-   @Test
-   public void supportsIteration() {
-      String barcode1 = addHoldingWithClassification("1");
-      String barcode2 = addHoldingWithClassification("2");
+    @Test
+    public void supportsIteration() {
+        String barcode1 = addHoldingWithClassification("1");
+        String barcode2 = addHoldingWithClassification("2");
 
-      List<String> results = new ArrayList<>();
-      for (Holding holding: catalog)
-         results.add(holding.getBarcode());
+        List<String> results = new ArrayList<>();
+        for (Holding holding : catalog)
+            results.add(holding.getBarcode());
 
-      assertThat(results, hasExactlyItems(barcode1, barcode2));
-   }
+        assertThat(results, hasExactlyItems(barcode1, barcode2));
+    }
 }

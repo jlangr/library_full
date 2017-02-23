@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -175,33 +175,32 @@ public class Asserts {
             this.memberDiscount = memberDiscount;
         }
 
-public void completeSale() {
-    registerMessages.clear();
-    total = BigDecimal.ZERO;
-    totalOfDiscountedItems = BigDecimal.ZERO;
-    for (Item item : purchases) {
-        BigDecimal itemTotal = BigDecimal.ZERO;
-        String message = "";
-        if (item.isDiscountable()) {
-            BigDecimal discounted = item.price().multiply(BigDecimal.ONE.subtract(memberDiscount));
-            totalOfDiscountedItems = totalOfDiscountedItems.add(discounted);
-            message =
-                    "item: " + item.getDescription() +
-                    " price: " + new DecimalFormat("#0.00").format(item.price()) +
-                    " discounted price: " + new DecimalFormat("#0.00").format(discounted);
-            itemTotal = itemTotal.add(discounted);
+        public void completeSale() {
+            registerMessages.clear();
+            total = BigDecimal.ZERO;
+            totalOfDiscountedItems = BigDecimal.ZERO;
+            for (Item item : purchases) {
+                BigDecimal itemTotal = BigDecimal.ZERO;
+                String message = "";
+                if (item.isDiscountable()) {
+                    BigDecimal discounted = item.price().multiply(BigDecimal.ONE.subtract(memberDiscount));
+                    totalOfDiscountedItems = totalOfDiscountedItems.add(discounted);
+                    message =
+                            "item: " + item.getDescription() +
+                            " price: " + new DecimalFormat("#0.00").format(item.price()) +
+                            " discounted price: " + new DecimalFormat("#0.00").format(discounted);
+                    itemTotal = itemTotal.add(discounted);
+                } else {
+                    itemTotal = item.price();
+                    message =
+                            "item: " + item.getDescription() +
+                            " price: " + new DecimalFormat("#0.00").format(itemTotal);
+                }
+                total = total.add(itemTotal);
+                appendMessage(message);
+                registerMessages.add(message);
+            }
         }
-        else {
-            itemTotal = item.price();
-            message =
-                    "item: " + item.getDescription() +
-                    " price: " + new DecimalFormat("#0.00").format(itemTotal);
-        }
-        total = total.add(itemTotal);
-        appendMessage(message);
-        registerMessages.add(message);
-    }
-}
 
         void appendMessage(String message) {
             DisplayDevice.appendMessage(message);
@@ -253,7 +252,11 @@ public void completeSale() {
 
     @Test
     public void completeSaleIncorporatesDiscounts() {
-        Register register = new Register() { @Override void appendMessage(String m) { } };
+        Register register = new Register() {
+            @Override
+            void appendMessage(String m) {
+            }
+        };
         register.setMemberDiscount(new BigDecimal(0.1));
         register.purchase(new Item("milk", new BigDecimal(5)));
         register.purchase(new Item("cookies", new BigDecimal(5)));
@@ -265,7 +268,11 @@ public void completeSale() {
 
     @Test
     public void someItemsNotDiscountable() {
-        Register register = new Register() { @Override void appendMessage(String m) { } };
+        Register register = new Register() {
+            @Override
+            void appendMessage(String m) {
+            }
+        };
         register.setMemberDiscount(new BigDecimal(0.1));
         register.purchase(new Item("cookies", new BigDecimal(10)));
         Item nonDiscountable = new Item("scrapple", new BigDecimal(10));
@@ -279,7 +286,11 @@ public void completeSale() {
 
     @Test
     public void answersTotalOfDiscountedItems() {
-        Register register = new Register() { @Override void appendMessage(String m) { } };
+        Register register = new Register() {
+            @Override
+            void appendMessage(String m) {
+            }
+        };
         register.setMemberDiscount(new BigDecimal(0.1));
         register.purchase(new Item("cookies", new BigDecimal(10)));
         Item nonDiscountable = new Item("scrapple", new BigDecimal(5));

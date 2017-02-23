@@ -10,24 +10,24 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 public class LessThan extends TypeSafeMatcher<Number> {
-   private Number rhs;
+    private Number rhs;
 
-   public LessThan(Number rhs) {
-      this.rhs = rhs;
-   }
+    public LessThan(Number rhs) {
+        this.rhs = rhs;
+    }
 
-   @Override
-   public void describeTo(Description description) {
-      description.appendText("A number less than " + rhs);
-   }
+    @Override
+    public void describeTo(Description description) {
+        description.appendText("A number less than " + rhs);
+    }
 
-   @Override
-   public boolean matchesSafely(Number lhs) {
-      return lhs.doubleValue() < rhs.doubleValue();
-   }
+    @Override
+    public boolean matchesSafely(Number lhs) {
+        return lhs.doubleValue() < rhs.doubleValue();
+    }
 
-   @Factory
-   public static <T> Matcher<Number> lessThan(Number number) {
-      return new LessThan(number);
-   }
+    @Factory
+    public static <T> Matcher<Number> lessThan(Number number) {
+        return new LessThan(number);
+    }
 }

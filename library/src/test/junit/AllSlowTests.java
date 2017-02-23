@@ -1,5 +1,7 @@
+import com.googlecode.junittoolbox.IncludeCategories;
+import com.googlecode.junittoolbox.SuiteClasses;
+import com.googlecode.junittoolbox.WildcardPatternSuite;
 import org.junit.runner.RunWith;
-import com.googlecode.junittoolbox.*;
 
 @RunWith(WildcardPatternSuite.class)
 @SuiteClasses({"**/*Test.class"})

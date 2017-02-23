@@ -3,8 +3,7 @@ package util;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertThat;
 import static util.matchers.LessThan.lessThan;
 
 public class AnAuto {

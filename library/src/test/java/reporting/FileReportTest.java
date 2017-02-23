@@ -6,9 +6,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 public class FileReportTest {
     @Test
     public void canLoadInputStreamIntoTitleAndContentArray() {

@@ -1,10 +1,10 @@
 package reporting;
 
-import org.junit.*;
+import org.junit.Test;
 
 public class ReportMailerTest {
-   @Test
-   public void stub() {
+    @Test
+    public void stub() {
 
-   }
+    }
 }

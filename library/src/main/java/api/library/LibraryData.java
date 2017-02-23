@@ -5,9 +5,9 @@ import persistence.HoldingStore;
 import persistence.PatronStore;
 
 public class LibraryData {
-   public static void deleteAll() {
-      BranchStore.deleteAll();
-      HoldingStore.deleteAll();
-      PatronStore.deleteAll();
-   }
+    public static void deleteAll() {
+        BranchStore.deleteAll();
+        HoldingStore.deleteAll();
+        PatronStore.deleteAll();
+    }
 }

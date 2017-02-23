@@ -1,5 +1,5 @@
 package api.scanner;
 
 public enum ScanStationMode {
-   INVENTORY, CHECKOUT, WAITING, RETURNS
+    INVENTORY, CHECKOUT, WAITING, RETURNS
 }

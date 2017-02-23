@@ -1,8 +1,11 @@
 package util;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 // 1. Un-ignore the next commented-out test method.
 // 2. Run JUnit against *all* tests in the project.
@@ -14,65 +17,65 @@ import org.junit.*;
 // 7. Return to step 1.
 
 public class NameNormalizerTest {
-   private NameNormalizer normalizer;
+    private NameNormalizer normalizer;
 
-   @Before
-   public void create() {
-      normalizer = new NameNormalizer();
-   }
+    @Before
+    public void create() {
+        normalizer = new NameNormalizer();
+    }
 
-   @Ignore
-   @Test
-   public void returnsEmptyStringWhenEmpty() {
-      assertThat(normalizer.normalize(""), equalTo(""));
-   }
+    @Ignore
+    @Test
+    public void returnsEmptyStringWhenEmpty() {
+        assertThat(normalizer.normalize(""), equalTo(""));
+    }
 
-   @Ignore
-   @Test
-   public void returnsLastFirstWhenFirstLastProvided() {
-      assertThat(normalizer.normalize("Joseph Heller"), equalTo("Heller, Joseph"));
+    @Ignore
+    @Test
+    public void returnsLastFirstWhenFirstLastProvided() {
+        assertThat(normalizer.normalize("Joseph Heller"), equalTo("Heller, Joseph"));
 //      assertThat(normalizer.normalize("Haruki Murakami"), equalTo("Murakami, Haruki"));
-   }
+    }
 
-   @Ignore
-   @Test
-   public void returnsSingleWordName() {
-      assertThat(normalizer.normalize("Plato"), equalTo("Plato"));
-   }
+    @Ignore
+    @Test
+    public void returnsSingleWordName() {
+        assertThat(normalizer.normalize("Plato"), equalTo("Plato"));
+    }
 
-   @Ignore
-   @Test
-   public void trimsWhitespace() {
-      assertThat(normalizer.normalize("  Big Boi   "), equalTo("Boi, Big"));
-   }
+    @Ignore
+    @Test
+    public void trimsWhitespace() {
+        assertThat(normalizer.normalize("  Big Boi   "), equalTo("Boi, Big"));
+    }
 
-   @Ignore
-   @Test
-   public void initializesMiddleName() {
-      assertThat(normalizer.normalize("Henry David Thoreau"), equalTo("Thoreau, Henry D."));
-   }
+    @Ignore
+    @Test
+    public void initializesMiddleName() {
+        assertThat(normalizer.normalize("Henry David Thoreau"), equalTo("Thoreau, Henry D."));
+    }
 
-   @Ignore
-   @Test
-   public void doesNotInitializeOneLetterMiddleName() {
-      assertThat(normalizer.normalize("Henry David Thoreau"), equalTo("Thoreau, Henry D."));
-   }
+    @Ignore
+    @Test
+    public void doesNotInitializeOneLetterMiddleName() {
+        assertThat(normalizer.normalize("Henry David Thoreau"), equalTo("Thoreau, Henry D."));
+    }
 
-   @Ignore
-   @Test
-   public void initializesEachOfMultipleMiddleNames() {
-      assertThat(normalizer.normalize("Julia Scarlett Elizabeth Louis-Dreyfus"), equalTo("Louis-Dreyfus, Julia S. E."));
-   }
+    @Ignore
+    @Test
+    public void initializesEachOfMultipleMiddleNames() {
+        assertThat(normalizer.normalize("Julia Scarlett Elizabeth Louis-Dreyfus"), equalTo("Louis-Dreyfus, Julia S. E."));
+    }
 
-   @Ignore
-   @Test
-   public void appendsSuffixesToEnd() {
-      assertThat(normalizer.normalize("Martin Luther King, Jr."), equalTo("King, Martin L., Jr."));
-   }
+    @Ignore
+    @Test
+    public void appendsSuffixesToEnd() {
+        assertThat(normalizer.normalize("Martin Luther King, Jr."), equalTo("King, Martin L., Jr."));
+    }
 
-   @Ignore
-   @Test(expected=IllegalArgumentException.class)
-   public void throwsWhenNameContainsTwoCommas() {
-      normalizer.normalize("Thurston, Howell, III");
-   }
+    @Ignore
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsWhenNameContainsTwoCommas() {
+        normalizer.normalize("Thurston, Howell, III");
+    }
 }

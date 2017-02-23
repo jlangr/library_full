@@ -1,7 +1,10 @@
 package reporting;
 
-import org.apache.commons.net.ftp.*;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPClientConfig;
+import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.*;
 

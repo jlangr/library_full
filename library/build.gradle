@@ -37,6 +37,6 @@ dependencies {
 sourceSets {
     test {
         resources { srcDirs = ['src/resources'] }
-        java { srcDirs = ['src/test/java', 'src/test/junit'] } 
+        java { srcDirs = ['src/test/java', 'src/test/junit'] }
     }
 }
