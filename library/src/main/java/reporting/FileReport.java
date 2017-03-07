@@ -81,7 +81,7 @@ public class FileReport implements Report {
         return name;
     }
 
-    private void load() {
+    public void load() {
         try {
             BufferedReader reader = new BufferedReader(new FileReader("local.txt"));
             String[] list = load(reader);
@@ -94,7 +94,7 @@ public class FileReport implements Report {
         }
     }
 
-    private String[] load(BufferedReader reader) {
+    public String[] load(BufferedReader reader) {
         try {
             String first = reader.readLine();
 
