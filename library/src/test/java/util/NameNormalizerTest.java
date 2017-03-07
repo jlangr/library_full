@@ -24,44 +24,37 @@ public class NameNormalizerTest {
         normalizer = new NameNormalizer();
     }
 
-    @Ignore
     @Test
     public void returnsEmptyStringWhenEmpty() {
         assertThat(normalizer.normalize(""), equalTo(""));
     }
 
-    @Ignore
     @Test
     public void returnsLastFirstWhenFirstLastProvided() {
         assertThat(normalizer.normalize("Joseph Heller"), equalTo("Heller, Joseph"));
-//      assertThat(normalizer.normalize("Haruki Murakami"), equalTo("Murakami, Haruki"));
+        assertThat(normalizer.normalize("Haruki Murakami"), equalTo("Murakami, Haruki"));
     }
 
-    @Ignore
     @Test
     public void returnsSingleWordName() {
         assertThat(normalizer.normalize("Plato"), equalTo("Plato"));
     }
 
-    @Ignore
     @Test
     public void trimsWhitespace() {
         assertThat(normalizer.normalize("  Big Boi   "), equalTo("Boi, Big"));
     }
 
-    @Ignore
     @Test
     public void initializesMiddleName() {
         assertThat(normalizer.normalize("Henry David Thoreau"), equalTo("Thoreau, Henry D."));
     }
 
-    @Ignore
     @Test
     public void doesNotInitializeOneLetterMiddleName() {
-        assertThat(normalizer.normalize("Henry David Thoreau"), equalTo("Thoreau, Henry D."));
+        assertThat(normalizer.normalize("Harry S Truman"), equalTo("Truman, Harry S"));
     }
 
-    @Ignore
     @Test
     public void initializesEachOfMultipleMiddleNames() {
         assertThat(normalizer.normalize("Julia Scarlett Elizabeth Louis-Dreyfus"), equalTo("Louis-Dreyfus, Julia S. E."));
