@@ -42,7 +42,7 @@ public abstract class ClassificationApiContract {
     public void populatesYearWithReasonableValue() {
         int currentYear = LocalDate.now().getYear();
         assertThat(Integer.parseInt(material.getYear()),
-                is(both(greaterThan(1440)).and(lessThanOrEqualTo(2017))));
+                is(both(greaterThan(1440)).and(lessThanOrEqualTo(currentYear))));
     }
 
 
