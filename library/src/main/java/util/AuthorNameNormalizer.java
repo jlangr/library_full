@@ -1,6 +1,6 @@
 package util;
 
-public class NameNormalizer {
+public class AuthorNameNormalizer {
 
     // hints:
     // - You might try RegEx replace but things might get ugly...

@@ -16,12 +16,12 @@ import static org.junit.Assert.assertThat;
 // 6. If there is a commented-out assertion, uncomment it. It should fail. If not, return to step 5.
 // 7. Return to step 1.
 
-public class NameNormalizerTest {
-    private NameNormalizer normalizer;
+public class AnAuthorNameNormalizer {
+    private AuthorNameNormalizer normalizer;
 
     @Before
     public void create() {
-        normalizer = new NameNormalizer();
+        normalizer = new AuthorNameNormalizer();
     }
 
     @Ignore
@@ -58,7 +58,7 @@ public class NameNormalizerTest {
     @Ignore
     @Test
     public void doesNotInitializeOneLetterMiddleName() {
-        assertThat(normalizer.normalize("Henry David Thoreau"), equalTo("Thoreau, Henry D."));
+        assertThat(normalizer.normalize("Harry S Truman"), equalTo("Truman, Harry S"));
     }
 
     @Ignore
