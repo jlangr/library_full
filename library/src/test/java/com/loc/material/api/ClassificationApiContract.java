@@ -45,7 +45,6 @@ public abstract class ClassificationApiContract {
                 is(both(greaterThan(1440)).and(lessThanOrEqualTo(currentYear))));
     }
 
-
     abstract protected ClassificationApi createClassificationApiImpl();
 
     abstract protected String validQueryIsbn();
