@@ -32,20 +32,19 @@ public class AnAuthorNameNormalizer {
 
     @Ignore
     @Test
-    public void returnsLastFirstWhenFirstLastProvided() {
-        assertThat(normalizer.normalize("Joseph Heller"), equalTo("Heller, Joseph"));
-//      assertThat(normalizer.normalize("Haruki Murakami"), equalTo("Murakami, Haruki"));
-    }
-
-    @Ignore
-    @Test
     public void returnsSingleWordName() {
         assertThat(normalizer.normalize("Plato"), equalTo("Plato"));
     }
 
     @Ignore
     @Test
-    public void trimsWhitespace() {
+    public void returnsLastFirstWhenFirstLastProvided() {
+      assertThat(normalizer.normalize("Haruki Murakami"), equalTo("Murakami, Haruki"));
+    }
+
+    @Ignore
+    @Test
+    public void trimsLeadingAndTrailingWhitespace() {
         assertThat(normalizer.normalize("  Big Boi   "), equalTo("Boi, Big"));
     }
 
