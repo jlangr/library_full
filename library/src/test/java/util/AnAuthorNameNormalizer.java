@@ -24,57 +24,79 @@ public class AnAuthorNameNormalizer {
         normalizer = new AuthorNameNormalizer();
     }
 
-    @Ignore
     @Test
     public void returnsEmptyStringWhenEmpty() {
-        assertThat(normalizer.normalize(""), equalTo(""));
+        assertThat(normalizer.normalizeName(""), equalTo(""));
     }
 
-    @Ignore
     @Test
     public void returnsSingleWordName() {
-        assertThat(normalizer.normalize("Plato"), equalTo("Plato"));
+        assertThat(normalizer.normalizeName("Plato"), equalTo("Plato"));
     }
 
-    @Ignore
     @Test
     public void returnsLastFirstWhenFirstLastProvided() {
-      assertThat(normalizer.normalize("Haruki Murakami"), equalTo("Murakami, Haruki"));
+      assertThat(normalizer.normalizeName("Haruki Murakami"), equalTo("Murakami, Haruki"));
     }
 
-    @Ignore
     @Test
     public void trimsLeadingAndTrailingWhitespace() {
-        assertThat(normalizer.normalize("  Big Boi   "), equalTo("Boi, Big"));
+        assertThat(normalizer.normalizeName("  Big Boi   "), equalTo("Boi, Big"));
     }
 
-    @Ignore
     @Test
     public void initializesMiddleName() {
-        assertThat(normalizer.normalize("Henry David Thoreau"), equalTo("Thoreau, Henry D."));
+        assertThat(normalizer.normalizeName("Henry David Thoreau"), equalTo("Thoreau, Henry D."));
     }
 
-    @Ignore
     @Test
     public void doesNotInitializeOneLetterMiddleName() {
-        assertThat(normalizer.normalize("Harry S Truman"), equalTo("Truman, Harry S"));
+        assertThat(normalizer.normalizeName("Harry S Truman"), equalTo("Truman, Harry S"));
     }
 
-    @Ignore
     @Test
     public void initializesEachOfMultipleMiddleNames() {
-        assertThat(normalizer.normalize("Julia Scarlett Elizabeth Louis-Dreyfus"), equalTo("Louis-Dreyfus, Julia S. E."));
+        assertThat(normalizer.normalizeName("Julia Scarlett Elizabeth Louis-Dreyfus"), equalTo("Louis-Dreyfus, Julia S. E."));
     }
 
-    @Ignore
     @Test
     public void appendsSuffixesToEnd() {
-        assertThat(normalizer.normalize("Martin Luther King, Jr."), equalTo("King, Martin L., Jr."));
+        assertThat(normalizer.normalizeName("Martin Luther King, Jr."), equalTo("King, Martin L., Jr."));
     }
 
     @Ignore
     @Test(expected = IllegalArgumentException.class)
     public void throwsWhenNameContainsTwoCommas() {
-        normalizer.normalize("Thurston, Howell, III");
+        normalizer.normalizeName("Thurston, Howell, III");
+    }
+
+
+    @Test
+    public void countOfNamesIsZeroWhenCreated() {
+        assertThat(normalizer.countOfNames(), equalTo(0));
+    }
+
+    @Test
+    public void countOfNamesIsIncrementOnAdd() {
+        normalizer.normalizeName("Thurston, Howell, III");
+
+        assertThat(normalizer.countOfNames(), equalTo(1));
+    }
+
+    @Test
+    public void countOfNamesIncrementsForEachNewName() {
+        normalizer.normalizeName("Thurston, Howell, III");
+        normalizer.normalizeName("xyz");
+
+        assertThat(normalizer.countOfNames(), equalTo(2));
+    }
+
+    @Test
+    public void countOfNamesDoesNotIncrementForDuplicateName() {
+        normalizer.normalizeName("Thurston, Howell, III");
+        normalizer.normalizeName("xyz");
+        normalizer.normalizeName("Thurston, Howell, III");
+
+        assertThat(normalizer.countOfNames(), equalTo(2));
     }
 }

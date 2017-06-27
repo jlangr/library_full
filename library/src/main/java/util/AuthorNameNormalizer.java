@@ -1,21 +1,67 @@
 package util;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public class AuthorNameNormalizer {
 
-    // hints:
-    // - You might try RegEx replace but things might get ugly...
-    // - The String method split is useful.
-    // - You might find the code simpler later if you use a LinkedList instead of an array.
+    private Set<String> names = new HashSet<>();
 
-
-    public String normalize(String string) {
-        throw new RuntimeException("not yet implemented");
+    public String normalizeName(String authorName) {
+        names.add(authorName);
+        String withoutSuffix = removeSuffix(authorName);
+        String[] nameParts = withoutSuffix.trim().split(" ");
+        if (nameParts.length == 1)
+           return authorName;
+        return lastName(nameParts) + ", " +
+               firstName(nameParts) +
+               middleInitials(nameParts) +
+                suffix(authorName);
     }
 
-    // See http://stackoverflow.com/questions/275944/java-how-do-i-count-the-number-of-occurrences-of-a-char-in-a-string
-    // ... if you need to convert to < Java 8
-   /* private */ long count(String string, char c) {
+    private String suffix(String authorName) {
+        String[] parts = authorName.split(",");
+        if (parts.length == 1) return "";
+        return "," + parts[1];
+    }
+
+    private String removeSuffix(String authorName) {
+        String[] parts = authorName.split(",");
+        if (parts.length == 1) return authorName;
+        return parts[0];
+    }
+
+    private String middleInitials(String[] nameParts) {
+        if (nameParts.length == 2) return "";
+
+        return " " + Arrays.stream(nameParts)
+                .skip(1)
+                .limit(nameParts.length - 2)
+                .map(this::middleInitial)
+                .collect(Collectors.joining(" "));
+    }
+
+    private String middleInitial(String namePart) {
+        if (namePart.length() == 1) return namePart;
+        return namePart.charAt(0) + ".";
+    }
+
+    private String firstName(String[] nameParts) {
+        return nameParts[0];
+    }
+
+    private String lastName(String[] nameParts) {
+        return nameParts[nameParts.length - 1];
+    }
+
+    /* private */ long count(String string, char c) {
         return string.chars().filter(ch -> ch == c).count();
+    }
+
+    public int countOfNames() {
+        return names.size();
     }
 }
 
