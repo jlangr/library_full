@@ -11,6 +11,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 public class APortfolio {
+    private static final int ALLSTATE_VALUE = 88;
+    private static final int IBM_VALUE =  125;
     private Portfolio portfolio;
 
     @Rule
@@ -90,6 +92,16 @@ public class APortfolio {
     }
 
     @Test
+    public void reducesCountOnSaleOfAllShares() {
+        portfolio.purchase("ALL", 42);
+
+        portfolio.sell("ALL", 42);
+
+        assertThat(portfolio.countOfUniqueSymbols(),
+                is(equalTo(0)));
+    }
+
+    @Test
     public void exceptionHasAppropriateMessageWhenSellingTooMuch() {
         portfolio.purchase("ALL", 10);
         thrown.expect(PortfolioException.class);
@@ -98,5 +110,51 @@ public class APortfolio {
         portfolio.sell("ALL", 10 + 1);
     }
 
-    // What tests am I missing???
+    @Test
+    public void isWorthlessWhenNothingPurchased() {
+        assertThat(portfolio.value(), is(equalTo(0)));
+    }
+
+    // this is really not a stub!
+    class StubStockService implements StockService {
+        @Override
+        public int price(String symbol) {
+            if (symbol.equals("IBM"))
+                return IBM_VALUE;
+            if (symbol.equals("ALL"))
+                return ALLSTATE_VALUE;
+            throw new RuntimeException("unrecognized symbol");
+        }
+    }
+
+    @Test
+    public void isWorthStockPriceForSingleSharePurchase() {
+        portfolio.setStockService(new StubStockService());
+
+        portfolio.purchase("ALL", 1);
+
+        assertThat(portfolio.value(), is(equalTo(ALLSTATE_VALUE)));
+    }
+
+    @Test
+    public void multipliesSharesByPrice() {
+        portfolio.setStockService(new StubStockService());
+
+        portfolio.purchase("ALL", 20);
+
+        assertThat(portfolio.value(),
+                is(equalTo(20 * ALLSTATE_VALUE)));
+    }
+
+    @Test
+    public void sumsValuesForMultipleSymbols() {
+        portfolio.setStockService(new StubStockService());
+
+        portfolio.purchase("ALL", 20);
+        portfolio.purchase("IBM", 30);
+
+        assertThat(portfolio.value(),
+                is(equalTo(20 * ALLSTATE_VALUE +
+                           30 * IBM_VALUE)));
+    }
 }

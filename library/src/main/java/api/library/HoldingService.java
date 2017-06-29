@@ -85,61 +85,58 @@ public class HoldingService {
 
     @SuppressWarnings("incomplete-switch")
     public int checkIn(String barCode, Date date, String branchScanCode) {
-        Branch branch = new BranchService().find(branchScanCode);
-        Holding hld = find(barCode);
-        if (hld == null)
+        Holding holding = loadHolding(barCode);
+        holding.checkIn(date, loadBranch(branchScanCode));
+        Patron foundPatron = new PatronService().loadPatron(holding);
+
+        foundPatron.remove(holding);
+
+        if (isLate(holding))
+            applyFine(holding, foundPatron);
+        return holding.daysLate();
+    }
+
+    private Holding loadHolding(String barCode) {
+        Holding holding = find(barCode);
+        if (holding == null)
             throw new HoldingNotFoundException();
+        return holding;
+    }
 
-        // set the holding to returned status
-        HoldingMap holdings = null;
-        hld.checkIn(date, branch);
+    private Branch loadBranch(String branchScanCode) {
+        return new BranchService().find(branchScanCode);
+    }
 
-        // locate the patron with the checked out book
-        // could introduce a patron reference ID in the holding...
-        Patron f = null;
-        for (Patron p : new PatronService().allPatrons()) {
-            holdings = p.holdingMap();
-            for (Holding patHld : holdings) {
-                if (hld.getBarcode().equals(patHld.getBarcode()))
-                    f = p;
-            }
+    private void applyFine(Holding hld, Patron foundPatron) {
+        int daysLate = hld.daysLate();
+        int fineBasis = hld.getMaterial().getFormat().getDailyFine();
+        switch (hld.getMaterial().getFormat()) {
+            case Book:
+                foundPatron.addFine(fineBasis * daysLate);
+                break;
+            case DVD:
+                int fine = Math.min(1000, 100 + fineBasis * daysLate);
+                foundPatron.addFine(fine);
+                break;
+            case NewReleaseDVD:
+                foundPatron.addFine(fineBasis * daysLate);
+                break;
         }
+    }
 
-        // remove the book from the patron
-        f.remove(hld);
-
-        // check for late returns
-        boolean isLate = false;
-        Calendar c = Calendar.getInstance();
-        c.setTime(hld.dateDue());
+    private void adjustForLastDayOfYear(Calendar c, Date dateDue) {
+        c.setTime(dateDue);
         int d = Calendar.DAY_OF_YEAR;
-
-        // check for last day in year
         if (c.get(d) > c.getActualMaximum(d)) {
             c.set(d, 1);
             c.set(Calendar.YEAR, c.get(Calendar.YEAR) + 1);
         }
-
-        if (hld.dateLastCheckedIn().after(c.getTime())) // is it late?
-            isLate = true;
-
-        if (isLate) {
-            int daysLate = hld.daysLate(); // calculate # of days past due
-            int fineBasis = hld.getMaterial().getFormat().getDailyFine();
-            switch (hld.getMaterial().getFormat()) {
-                case Book:
-                    f.addFine(fineBasis * daysLate);
-                    break;
-                case DVD:
-                    int fine = Math.min(1000, 100 + fineBasis * daysLate);
-                    f.addFine(fine);
-                    break;
-                case NewReleaseDVD:
-                    f.addFine(fineBasis * daysLate);
-                    break;
-            }
-            return daysLate;
-        }
-        return 0;
     }
+
+    private boolean isLate(Holding hld) {
+        Calendar calendar = Calendar.getInstance();
+        adjustForLastDayOfYear(calendar, hld.dateDue());
+        return hld.dateLastCheckedIn().after(calendar.getTime());
+    }
+
 }

@@ -1,5 +1,7 @@
 package api.library;
 
+import domain.core.Holding;
+import domain.core.HoldingMap;
 import domain.core.Patron;
 import persistence.PatronStore;
 
@@ -30,5 +32,18 @@ public class PatronService {
 
     public Collection<Patron> allPatrons() {
         return patronAccess.getAll();
+    }
+
+    public Patron loadPatron(Holding holding) {
+        // could introduce a patron reference ID in the loadHolding...
+        Patron foundPatron = null;
+        for (Patron patron : allPatrons()) {
+            HoldingMap holdings = patron.holdingMap();
+            for (Holding patHld : holdings) {
+                if (holding.getBarcode().equals(patHld.getBarcode()))
+                    foundPatron = patron;
+            }
+        }
+        return foundPatron;
     }
 }
