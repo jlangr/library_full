@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Portfolio {
-    private Map<String,Integer> holdings = new HashMap<>();
+    private Map<String, Integer> holdings = new HashMap<>();
     private StockService stockService = new NASDAQService();
 
     public boolean isEmpty() {
@@ -33,24 +33,10 @@ public class Portfolio {
     }
 
     private void removeSymbolIfNoSharesExist(String symbol) {
-        if (sharesForSymbol(symbol) == 0)
-            holdings.remove(symbol);
+        if (sharesForSymbol(symbol) == 0) holdings.remove(symbol);
     }
 
     private void throwWhenSellingTooManyShares(String symbol, int shares) {
-        if (shares > sharesForSymbol(symbol))
-            throw new PortfolioException("selling too much!");
-    }
-
-    public int value() {
-        int total = 0;
-        for (String symbol: holdings.keySet())
-            total += stockService.price(symbol)
-                   * sharesForSymbol(symbol);
-        return total;
-    }
-
-    public void setStockService(StockService stockService) {
-        this.stockService = stockService;
+        if (shares > sharesForSymbol(symbol)) throw new PortfolioException("selling too much!");
     }
 }

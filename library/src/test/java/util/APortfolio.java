@@ -114,47 +114,4 @@ public class APortfolio {
     public void isWorthlessWhenNothingPurchased() {
         assertThat(portfolio.value(), is(equalTo(0)));
     }
-
-    // this is really not a stub!
-    class StubStockService implements StockService {
-        @Override
-        public int price(String symbol) {
-            if (symbol.equals("IBM"))
-                return IBM_VALUE;
-            if (symbol.equals("ALL"))
-                return ALLSTATE_VALUE;
-            throw new RuntimeException("unrecognized symbol");
-        }
-    }
-
-    @Test
-    public void isWorthStockPriceForSingleSharePurchase() {
-        portfolio.setStockService(new StubStockService());
-
-        portfolio.purchase("ALL", 1);
-
-        assertThat(portfolio.value(), is(equalTo(ALLSTATE_VALUE)));
-    }
-
-    @Test
-    public void multipliesSharesByPrice() {
-        portfolio.setStockService(new StubStockService());
-
-        portfolio.purchase("ALL", 20);
-
-        assertThat(portfolio.value(),
-                is(equalTo(20 * ALLSTATE_VALUE)));
-    }
-
-    @Test
-    public void sumsValuesForMultipleSymbols() {
-        portfolio.setStockService(new StubStockService());
-
-        portfolio.purchase("ALL", 20);
-        portfolio.purchase("IBM", 30);
-
-        assertThat(portfolio.value(),
-                is(equalTo(20 * ALLSTATE_VALUE +
-                           30 * IBM_VALUE)));
-    }
 }
