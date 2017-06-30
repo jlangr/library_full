@@ -11,17 +11,8 @@ public class ReportUtil {
         String pads;
         switch (op) {
             case under:
-                int i = 0;
-                for (; i < count; i++)
-                    buffer.append('-');
-                String ptext = buffer.toString();
-                pads = "";
-                buffer1.append(ptext);
-                int l = count + spacing - ptext.length();
-                for (int j = 0; j < l; j++) {
-                    pads += " ";
-                }
-                buffer1.append(pads);
+                underlineAndPad(count, spacing, buffer, buffer1);
+                int l;
                 break;
             case pad:
                 pads = " ";
@@ -36,6 +27,21 @@ public class ReportUtil {
                 break;
         }
         return buffer1.toString();
+    }
+
+    private static void underlineAndPad(int count, int spacing, StringBuffer buffer, StringBuffer buffer1) {
+        String pads;
+        int i = 0;
+        for (; i < count; i++)
+            buffer.append('-');
+        String ptext = buffer.toString();
+        pads = "";
+        buffer1.append(ptext);
+        int l = count + spacing - ptext.length();
+        for (int j = 0; j < l; j++) {
+            pads += " ";
+        }
+        buffer1.append(pads);
     }
 
 }

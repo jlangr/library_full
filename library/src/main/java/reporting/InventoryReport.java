@@ -82,6 +82,9 @@ public class InventoryReport {
             i++;
         }
 
+        // add a footer here
+        // appendToFooter(buffer, records.size());
+
         String result = buffer.toString();
 
         BufferedWriter writer = null;
@@ -93,6 +96,14 @@ public class InventoryReport {
         } finally {
             writer.close();
         }
+    }
+
+    public void appendToFooter(StringBuilder buffer, int numberOfRecords) {
+        String formatString = numberOfRecords <= 100 ?
+                "Total # of records: %d\\n"
+                : "Total # of records (100 shown): %d\\n";
+
+        buffer.append(String.format(formatString, numberOfRecords));
     }
 
     class Record implements Comparable<Record> {

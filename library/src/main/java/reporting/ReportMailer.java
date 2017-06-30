@@ -14,8 +14,12 @@ public class ReportMailer {
         if (destinations.length == 0)
             throw new RuntimeException("dests required");
         for (int i = 0; i < destinations.length; i++)
-            if (MailDestination.getEndpoint(destinations[i]) == null)
+            if (getEndpoint(destinations[i]) == null)
                 throw new RuntimeException("invalid endpoint");
+    }
+
+    protected Endpoint getEndpoint(MailDestination destination) {
+        return MailDestination.getEndpoint(destination);
     }
 
     public void mailReport(Report report) throws AddressException,
@@ -36,8 +40,7 @@ public class ReportMailer {
         }
     }
 
-    Message constructMailMessage(String toAddress, Report report, Session session)
-            throws AddressException, MessagingException {
+    public static Message constructMailMessageStatic(String toAddress, Report report, Session session) throws MessagingException {
         String content = report.getText();
         String subject = report.getName();
 
@@ -49,6 +52,11 @@ public class ReportMailer {
         message.setFrom(new InternetAddress(FROM));
         message.setSubject(subject);
         return message;
+    }
+
+    Message constructMailMessage(String toAddress, Report report, Session session)
+            throws AddressException, MessagingException {
+        return constructMailMessageStatic(toAddress, report, session);
     }
 
     private static String getSMTPPassword() {

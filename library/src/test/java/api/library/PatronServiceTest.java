@@ -6,18 +6,29 @@ import domain.core.Patron;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import persistence.PatronStore;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class PatronServiceTest {
+    @InjectMocks
     PatronService service;
+    @Mock
+    private CreditVerifier verifier;
 
     @Before
     public void initialize() {
         PatronStore.deleteAll();
-        service = new PatronService();
     }
 
     @Test
@@ -29,11 +40,44 @@ public class PatronServiceTest {
 
     @Test
     public void allowsAddingPatronWithId() {
-        service.add("p123", "xyz");
+        when(verifier.isValid(anyString())).thenReturn(true);
+        service.add("p123", "xyz", "goodCC");
 
         Patron patron = service.find("p123");
 
         assertThat(patron.getName(), equalTo("xyz"));
+    }
+
+    @Test
+    public void rejectsAddingPatronWithBadCredit() {
+        when(verifier.isValid("badCC")).thenReturn(false);
+
+        service.add("p222", "", "badCC");
+
+        assertThat(service.allPatrons(), is(empty()));
+    }
+
+    @Test
+    public void addsPatronIfVerifierThrowsException() {
+        when(verifier.isValid(anyString())).thenThrow(new RuntimeException());
+
+        service.add("p123", "", "");
+
+        assertThat(service.allPatrons().size(), is(1));
+    }
+/*
+    rejectsAddingPatronWithBadCredit
+         create mockito stub --> always returns false
+                          when asked "hasGoodCredit" with a CC #
+         inject the stub
+
+         attempt to add, with credit card number that is "bad"
+
+         retrieve all and assert that it's empty
+         */
+
+    public PatronService getService() {
+        return service;
     }
 
     @Test(expected = InvalidPatronIdException.class)
@@ -43,6 +87,7 @@ public class PatronServiceTest {
 
     @Test(expected = DuplicatePatronException.class)
     public void rejectsAddOfDuplicatePatron() {
+        when(verifier.isValid(anyString())).thenReturn(true);
         service.add("p556", "");
         service.add("p556", "");
     }
