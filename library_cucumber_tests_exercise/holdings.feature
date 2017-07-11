@@ -18,9 +18,14 @@ Feature: holdings
 Scenario: Transfer by librarian
    Given a library system with a branch named "East"
    And a library system with a branch named "West"
-   When a librarian transfers QA-111:1 to branch "West"
-   Then the "West" branch contains the holding QA-111:1
-
+   And a holding with barcode QA-111:1 at branch "East"
+   When a librarian clicks on the Transfer menu item
+   And the librarian sets the holding classification field to QA-111:1
+   And the librarian sets the branch to "West"
+   And the librarian submits the page
+   And the librarian clicks on the Holdings by Branch menu item
+   And the librarian selects "West" from the branch names dropdown
+   Then the branch holdings list contains the holding QA-111:1
  
  Scenario: Check in to other branch 
    Given a library system with a branch named "East"
@@ -36,4 +41,3 @@ Scenario: Transfer by librarian
    Then QA-123:1 shows as being held at the branch named "West"
    And the due date for QA-123:1 is unspecified
    And QA-123:1 is marked as available
-
