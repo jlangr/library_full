@@ -26,15 +26,3 @@ IntelliJ IDEA Instructions
 * In the project tool window, expand library_full -> library -> src -> test -> junit.
 * Select AllFastTests. Right-click and select Run `AllFastTests`.
 * You should see at least 200 green unit tests, and they should run in a second or so at most.
-
-Custom Setup for Compozed
----
-
-* Ensure you are on the Guest Network (MyNet)
-    * From terminal run `~/compozed-workstation/bin/set_mynet`
-* From Intellij menu, select `File->Open` 
-* Select project folder and click `Open`
-* **Note**: Do not import or open from build.gradle as this will overwrite existing JUnit Test Run Configuration
-* In the project tool window, expand library_full -> library -> src -> test -> junit.
-* Select AllFastTests. Right-click and select Run `AllFastTests`.
-* You should see at least 200 green unit tests, and they should run in a second or so at most.
