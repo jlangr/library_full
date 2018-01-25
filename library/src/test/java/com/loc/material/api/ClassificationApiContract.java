@@ -1,8 +1,6 @@
 package com.loc.material.api;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 import testutil.Slow;
 
@@ -21,6 +19,7 @@ public abstract class ClassificationApiContract {
         material = classificationApiImplementation.retrieveMaterial(validQueryIsbn());
     }
 
+    @Ignore
     @Test
     public void populatesCriticalFields() {
         assertThat(material.getAuthor(), not(nullValue()));
@@ -28,16 +27,19 @@ public abstract class ClassificationApiContract {
         assertThat(material.getClassification(), not(nullValue()));
     }
 
+    @Ignore
     @Test
     public void echosSourceId() {
         assertThat(material.getSourceId(), is(equalTo(validQueryIsbn())));
     }
 
+    @Ignore
     @Test
     public void populatesFormatWithEnumValue() {
         assertThat(material.getFormat(), isIn(MaterialType.values()));
     }
 
+    @Ignore
     @Test
     public void populatesYearWithReasonableValue() {
         int currentYear = LocalDate.now().getYear();

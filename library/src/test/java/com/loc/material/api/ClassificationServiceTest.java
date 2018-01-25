@@ -1,6 +1,6 @@
 package com.loc.material.api;
 
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -30,6 +30,7 @@ public class ClassificationServiceTest {
     @InjectMocks
     private ClassificationService service;
 
+    @Ignore
     @Test
     public void retrieveMaterialPopulatesFromResponse() {
         Map<Object, Object> responseMap = createMap(service.isbnKey(THE_ROAD_ISBN),
@@ -45,6 +46,7 @@ public class ClassificationServiceTest {
     }
 
     @Category(Slow.class)
+    @Ignore
     @Test
     public void liveRetrieve() {
         ClassificationService liveService = new ClassificationService();

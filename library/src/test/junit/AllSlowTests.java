@@ -4,7 +4,7 @@ import com.googlecode.junittoolbox.WildcardPatternSuite;
 import org.junit.runner.RunWith;
 
 @RunWith(WildcardPatternSuite.class)
-@SuiteClasses({"**/*Test.class"})
+@SuiteClasses({"**/*.class"})
 @IncludeCategories(testutil.Slow.class)
 public class AllSlowTests {
 
