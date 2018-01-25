@@ -5,6 +5,7 @@ import java.util.*;
 public class StockPortfolio {
 	private Map<String, Integer> sharesForSymbol =
 			new HashMap<>();
+	private StockLookupService service = new TokyoStockService();
 
 	public boolean isEmpty() {
 		return numberOfSymbols() == 0;
@@ -28,6 +29,17 @@ public class StockPortfolio {
 		if(shareCount(symbol) < shares)
 			throw new InsufficientShareSale("selling too many shares of " + symbol);
 		sharesForSymbol.put(symbol, shareCount(symbol) - shares);
+	}
+
+	public int value() {
+		int total = 0;
+		for (String symbol: sharesForSymbol.keySet())
+			total += service.price(symbol) * shareCount(symbol);
+		return total;
+	}
+
+	public void setStockService(StockLookupService service) {
+		this.service = service;
 	}
 
 }

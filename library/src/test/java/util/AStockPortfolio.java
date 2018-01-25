@@ -26,16 +26,14 @@ public class AStockPortfolio {
 
 	@Test
 	public void hasZeroSymbolsWhenCreated() {
-		assertThat(stockPortfolio.numberOfSymbols(), 
-				is(equalTo(0)));
+		assertThat(stockPortfolio.numberOfSymbols(), is(equalTo(0)));
 	}
 
 	@Test
 	public void incrementSymbolAfterFirstPurchase() {
 		stockPortfolio.purchase("AAPL", 10);
 
-		assertThat(stockPortfolio.numberOfSymbols(), 
-				is(equalTo(1)));
+		assertThat(stockPortfolio.numberOfSymbols(), is(equalTo(1)));
 	}
 
 	@Test
@@ -43,8 +41,7 @@ public class AStockPortfolio {
 		stockPortfolio.purchase("AAPL", 10);
 		stockPortfolio.purchase("GOOG", 10);
 
-		assertThat(stockPortfolio.numberOfSymbols(), 
-				is(equalTo(2)));
+		assertThat(stockPortfolio.numberOfSymbols(), is(equalTo(2)));
 	}
 
 	@Test
@@ -52,75 +49,125 @@ public class AStockPortfolio {
 		stockPortfolio.purchase("AAPL", 10);
 		stockPortfolio.purchase("AAPL", 10);
 
-		assertThat(stockPortfolio.numberOfSymbols(), 
-				is(equalTo(1)));
+		assertThat(stockPortfolio.numberOfSymbols(), is(equalTo(1)));
 	}
 
 	@Test
 	public void hasZeroSharesForUnpurchasedSymbol() {
-		assertThat(stockPortfolio.shareCount("BLAH"), 
-				is(equalTo(0)));
+		assertThat(stockPortfolio.shareCount("BLAH"), is(equalTo(0)));
 	}
-	
+
 	@Test
 	public void returnsSharesForPurchasedSymbol() {
 		stockPortfolio.purchase("IBM", 42);
-		
-		assertThat(stockPortfolio.shareCount("IBM"), 
-				is(equalTo(42)));
+
+		assertThat(stockPortfolio.shareCount("IBM"), is(equalTo(42)));
 	}
-	
+
 	@Test
 	public void returnsSharesForMultiplePurchasedSymbols() {
 		stockPortfolio.purchase("AAPL", 10);
 		stockPortfolio.purchase("GOOG", 20);
-		
-		assertThat(stockPortfolio.shareCount("AAPL"), 
-				is(equalTo(10)));
+
+		assertThat(stockPortfolio.shareCount("AAPL"), is(equalTo(10)));
 	}
-	
+
 	@Test
 	public void returnsSumOfSharesForSamePurchasedSymbols() {
 		stockPortfolio.purchase("AAPL", 10);
 		stockPortfolio.purchase("AAPL", 32);
-		
-		assertThat(stockPortfolio.shareCount("AAPL"), 
-				is(equalTo(42)));
+
+		assertThat(stockPortfolio.shareCount("AAPL"), is(equalTo(42)));
 	}
-	
+
 	@Test
 	public void reduceSharesOnSale() {
 		stockPortfolio.purchase("AAPL", 10);
 		stockPortfolio.sell("AAPL", 1);
-		
-		assertThat(stockPortfolio.shareCount("AAPL"), 
-				is(equalTo(9)));
+
+		assertThat(stockPortfolio.shareCount("AAPL"), is(equalTo(9)));
 	}
-	
+
 	@Test(expected = InsufficientShareSale.class)
 	public void throwExceptionOnSellingInsufficientShares() {
 		stockPortfolio.purchase("AAPL", 10);
 		stockPortfolio.sell("AAPL", 11);
 	}
-	
+
 	@Test
 	public void throwWhenSellingInsufficientShares() {
 		stockPortfolio.purchase("AAPL", 10);
 		try {
 			stockPortfolio.sell("AAPL", 11);
 			fail("should've thrown an exception but did not");
-		}
-		catch (InsufficientShareSale expected) {
+		} catch (InsufficientShareSale expected) {
 			// fall thru
 		}
-		
+
 	}
-	
+
 	@Test
 	public void sonOfThrowWhenSellingTooManyShares() {
 		stockPortfolio.purchase("AAPL", 10);
 		thrown.expect(InsufficientShareSale.class);
 		thrown.expectMessage("selling too many shares of AAPL");
 		stockPortfolio.sell("AAPL", 11);
+	}
+
+	@Test
+	public void isWorthlessWithNoPurchases() {
+		assertThat(stockPortfolio.value(), is(equalTo(0)));
+	}
+
+	static final int AAPL_PRICE = 42;
+	static final int IBM_PRICE = 100;
+
+	@Test
+	public void isWorthSymbolPriceWhenPurchasingOneShare() {
+		StockLookupService service = new StockLookupService() {
+			@Override
+			public int price(String symbol) {
+				return AAPL_PRICE;
+			}
+		};
+		stockPortfolio.setStockService(service);
+		stockPortfolio.purchase("AAPL", 1);
+
+		assertThat(stockPortfolio.value(), is(equalTo(AAPL_PRICE)));
+
+	}
+
+	@Test
+	public void valueMultipliesSharesByPrice() {
+		StockLookupService service = new StockLookupService() {
+			@Override
+			public int price(String symbol) {
+				return AAPL_PRICE;
+			}
+		};
+		stockPortfolio.setStockService(service);
+		stockPortfolio.purchase("AAPL", 10);
+
+		assertThat(stockPortfolio.value(), is(equalTo(10 * AAPL_PRICE)));
+
+	}
+
+	@Test
+	public void sumsValuesOfAllHoldings() {
+		StockLookupService service = new StockLookupService() {
+			@Override
+			public int price(String symbol) {
+				if (symbol.equals("IBM"))
+					return IBM_PRICE;
+				return AAPL_PRICE;
+			}
+		};
+		stockPortfolio.setStockService(service);
+		stockPortfolio.purchase("AAPL", 10);
+		stockPortfolio.purchase("IBM", 20);
+
+		assertThat(stockPortfolio.value(), is(equalTo(
+				10 * AAPL_PRICE +
+				20 * IBM_PRICE)));
 	}
 }
